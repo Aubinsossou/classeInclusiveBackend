@@ -25,20 +25,19 @@ class EcoleController extends Controller
 
     public function index()
     {
-        $ecole = Ecole::all();
+        $ecoles = Ecole::all();
 
         if ($ecole) {
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Liste des ecoles',
-                'data' => $ecole,
+                'data' => $ecoles,
             ]);
         }
         return response()->json([
             'status' => 'Echec',
-            'message' => 'Liste des ecoles non trouver',
-            'data' => $ecole,
+            'message' => 'Liste des ecoles non trouver'
         ]);
 
     }

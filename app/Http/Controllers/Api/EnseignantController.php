@@ -18,6 +18,22 @@ use Validator;
 
 class EnseignantController extends Controller
 {
+    public function index()
+    {
+        $enseignants = Enseignant::all();
+        if ($enseignants) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Liste des élèves',
+                'data' => $enseignants
+            ]);
+        }
+        return response()->json([
+            'status' => 'echec',
+            'messge' => 'Liste des enseignants non trouver'
+        ]);
+    }
+
     public function registerEnseignant(Request $request, PasswordEnseignantService $passwordService)
     {
         $validate = Validator::make($request->all(), [
