@@ -1,0 +1,120 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Handicap;
+use Illuminate\Http\Request;
+use Validator;
+
+class HandicapController extends Controller
+{
+      public function index()
+    {
+        $handicapes = Handicap::all();
+        if (count($handicapes) !== 0) {
+            return response()->json([
+                "status" => "Success",
+                "message" => "listes des handicapes trouver",
+                "data" => $handicapes,
+            ]);
+        }
+        return response()->json([
+            "status" => "Echec",
+            "message" => "listes des handicapes non trouver",
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+           "name" => 'required|string'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => $validate->errors(),
+            ], 400);
+        }
+        $handicape = Handicap::create([
+            //dd($request->handicape),
+            "name" => $request->name,
+        ]);
+
+        return response()->json([
+            "status" => "Success",
+            "message" => "handicape creer avec success",
+            "data" => $handicape,
+        ]);
+    }
+    public function edit($id)
+    {
+        $handicape = Handicap::find($id);
+        $handicapeEleve = Handicap::with("eleves")->find($id);
+
+        if ($handicape) {
+            return response()->json([
+                "status" => "Success",
+                "message" => "handicape retrouver",
+                "data" => $handicape,
+                "handicapeEleve" => $handicapeEleve
+            ]);
+        }
+        return response()->json([
+            "status" => "Echec",
+            "message" => "Handicape non retrouver",
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validate = Validator::make($request->all(), [
+                      "name" => 'required|string'
+
+        ]);
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => $validate->errors(),
+            ]);
+        }
+
+        $handicapeUpdate = Handicap::where("id", "=", $id)->get()->first();
+
+        if (!$handicapeUpdate) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => "Aucune Handicape trouver avec cet id",
+            ], 400);
+        }
+
+        if ($handicapeUpdate) {
+            $handicapeUpdate->update([
+                "name" => $request->name,
+            ]);
+
+            return response()->json([
+                "status" => "Success",
+                "message" => " Handicape modifier avec success",
+                "data" => $handicapeUpdate,
+            ]);
+        }
+    }
+    public function destroy($id)
+    {
+        $handicape = Handicap::find($id);
+        if ($id) {
+            $handicape->delete();
+
+            return response()->json([
+                "status" => "Success",
+                "message" => " Handicape supprimer avec success",
+            ]);
+        }
+        return response()->json([
+            "status" => "Echec",
+            "message" => " Aucun Handicape trouver avec cet id pour suppression",
+        ]);
+    }
+}
