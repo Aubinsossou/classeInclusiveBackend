@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('ecoles', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->number(column: "numero")->nullable();
+            $table->string(column: "numero")->nullable();
             $table->string('email')->unique();
             $table->string(column: "mot de passe");
             $table->timestamp('email_verified_at')->nullable();

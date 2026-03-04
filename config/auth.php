@@ -44,7 +44,7 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
-         'ecole_aoi' => [
+         'ecole_api' => [
             'driver' => 'passport',
             'provider' => 'ecoles',
         ],

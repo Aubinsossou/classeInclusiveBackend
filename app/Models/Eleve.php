@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,13 +15,30 @@ use Illuminate\Notifications\Notifiable;
 
 class Eleve extends Authenticatable
 {
-     use HasApiTokens, HasFactory, Notifiable, HasRoles;
-       protected $guarded = [
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    protected $guarded = [
 
     ];
-     protected $hidden = [
+    protected $hidden = [
         'password',
         'remember_token',
         'updated_at'
     ];
+    public function classe(): BelongsTo
+    {
+        return $this->belongsTo(Classe::class);
+    }
+
+    public function handicaps(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Handicap::class,
+            'eleveHandicap'
+        );
+    }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
 }

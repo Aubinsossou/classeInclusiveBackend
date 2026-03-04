@@ -23,7 +23,8 @@ class EleveController extends Controller
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'numeroParent' => 'required|integer',
-            'id_handicape' => 'required|integer'
+            'handicap_id' => 'required|integer|exists:handicaps',
+            'classe_id' => 'required|integer|exists:classes',
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -37,7 +38,8 @@ class EleveController extends Controller
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'numeroParent' => $request->numeroParent,
-            'id_handicape' => $request->id_handicape,
+            'handicap_id' => $request->handicap_id,
+            'classe_id' => $request->classe_id,
             'code' => $code,
         ]);
 

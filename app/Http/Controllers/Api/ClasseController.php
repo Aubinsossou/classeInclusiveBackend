@@ -29,7 +29,8 @@ class ClasseController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            "name" => 'required|string'
+            "name" => 'required|string',
+            "ecole_id" => 'required|integer|exists:ecoles',
         ]);
 
         if ($validate->fails()) {
@@ -40,7 +41,8 @@ class ClasseController extends Controller
         }
         $classe = Classe::create([
             //dd($request->classe),
-            "classe" => $request->classe,
+            "name" => $request->name,
+            "ecole_id" => $request->ecole_id,
         ]);
 
         return response()->json([
@@ -71,7 +73,8 @@ class ClasseController extends Controller
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-            "name" => 'required|string'
+            "name" => 'required|string',
+            "ecole_id" => 'required|integer|exists:ecoles',
 
         ]);
         if ($validate->fails()) {
@@ -93,6 +96,7 @@ class ClasseController extends Controller
         if ($classeUpdate) {
             $classeUpdate->update([
                 "name" => $request->name,
+                "ecole_id" => $request->ecole_id,
             ]);
 
             return response()->json([
