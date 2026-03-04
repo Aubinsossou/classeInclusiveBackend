@@ -17,6 +17,22 @@ use Validator;
 
 class EleveController extends Controller
 {
+    public function index()
+    {
+        $eleves = Eleve::all();
+        if ($eleves) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Liste des élèves',
+                'data' => $eleves
+            ]);
+        }
+        return response()->json([
+            'status' => 'echec',
+            'messge' => 'Liste des eleves non trouver'
+        ]);
+    }
+
     public function registerEleve(Request $request, PasswordEleveService $passwordService)
     {
         $validate = Validator::make($request->all(), [
