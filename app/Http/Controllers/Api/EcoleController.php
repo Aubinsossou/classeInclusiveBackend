@@ -27,7 +27,7 @@ class EcoleController extends Controller
     {
         $ecoles = Ecole::all();
 
-        if ($ecole) {
+        if ($ecoles) {
 
             return response()->json([
                 'status' => 'success',
@@ -46,7 +46,7 @@ class EcoleController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'telephone' => 'required|string',
+            'numero' => 'string',
             'password' => 'required|string|min:4',
 
         ]);
@@ -56,18 +56,23 @@ class EcoleController extends Controller
                 'message' => 'Validation échoué',
             ], 400);
         }
+
+    /*     Role::create(["name" => "eleve",'guard_name' => 'eleve_api']);
+
+        dd(); */
         $ecole = Ecole::create([
             'name' => $request->name,
             'email' => $request->email,
-            'telephone' => $request->telephone,
+            'numero' => $request->numero,
             'password' => Hash::make($request->password),
         ]);
+
         $ecole->assignRole("ecole");
 
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Mentor créé avec succès',
+            'message' => 'Ecole créé avec succès',
             'data' => $ecole,
         ]);
     }

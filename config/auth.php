@@ -44,15 +44,15 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
-         'ecole_api' => [
+        'ecole_api' => [
             'driver' => 'passport',
             'provider' => 'ecoles',
         ],
-         'enseignant_api' => [
+        'enseignant_api' => [
             'driver' => 'passport',
             'provider' => 'enseignants',
         ],
-         'eleve_api' => [
+        'eleve_api' => [
             'driver' => 'passport',
             'provider' => 'eleves',
         ],
@@ -85,6 +85,21 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        'ecoles' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Ecole::class,
+        ],
+
+        'eleves' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Eleve::class,
+        ],
+
+        'enseignants' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Enseignant::class,
+        ],
     ],
 
     /*

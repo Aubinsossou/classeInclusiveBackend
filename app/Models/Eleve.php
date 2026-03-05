@@ -16,6 +16,9 @@ use Illuminate\Notifications\Notifiable;
 class Eleve extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
+
+    protected $guard_name = 'eleve_api';
+
     protected $guarded = [
 
     ];

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Classe extends Model
 {
+    protected $guarded = [];
     public function ecole(): BelongsTo
     {
         return $this->belongsTo(Ecole::class);

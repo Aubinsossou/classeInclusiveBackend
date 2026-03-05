@@ -10,11 +10,11 @@ class EnseignantPasswordMail extends Mailable
     use SerializesModels;
 
     public $password;
-    public $teacher;
+    public $enseignant;
 
-    public function __construct($teacher, $password)
+    public function __construct($enseignant, $password)
     {
-        $this->teacher = $teacher;
+        $this->enseignant = $enseignant;
         $this->password = $password;
     }
 

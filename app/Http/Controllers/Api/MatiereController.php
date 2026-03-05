@@ -28,7 +28,8 @@ class MatiereController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-           "matiere" => 'required|string'
+           "name" => 'required|string',
+           "ecole_id" => 'required|integer|exists:ecoles'
         ]);
 
         if ($validate->fails()) {
@@ -39,7 +40,8 @@ class MatiereController extends Controller
         }
         $matiere = Matiere::create([
             //dd($request->matiere),
-            "matiere" => $request->matiere,
+            "name" => $request->name,
+            "ecole_id" => $request->ecole_id
         ]);
 
         return response()->json([
@@ -70,7 +72,9 @@ class MatiereController extends Controller
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-                      "matiere" => 'required|string'
+                      "name" => 'required|string',
+           "ecole_id" => 'required|integer|exists:ecoles'
+
 
         ]);
         if ($validate->fails()) {
@@ -91,7 +95,8 @@ class MatiereController extends Controller
 
         if ($matiereUpdate) {
             $matiereUpdate->update([
-                "matiere" => $request->matiere,
+                "name" => $request->name,
+                "ecole_id" => $request->ecole_id,
             ]);
 
             return response()->json([

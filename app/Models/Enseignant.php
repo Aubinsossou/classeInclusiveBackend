@@ -17,6 +17,9 @@ use Illuminate\Notifications\Notifiable;
 class Enseignant extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
+
+    protected $guard_name = 'enseignant_api';
+
     protected $guarded = [
 
     ];

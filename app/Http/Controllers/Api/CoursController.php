@@ -32,6 +32,7 @@ class CoursController extends Controller
             "description" => 'required|String',
             "contenu" => 'required|String',
             "matiere_id" => 'required|integerexists:matieres',
+            "classe_id" => 'required|integerexists:classes',
             "enseignant_id" => 'required|integerexists:enseignants',
         ]);
 
@@ -47,6 +48,7 @@ class CoursController extends Controller
             "description" => $request->description,
             "contenu" => $request->contenu,
             "matiere_id" => $request->matiere_id,
+            "classe_id" => $request->classe_id,
             "enseignant_id" => $request->enseignant_id,
 
         ]);
@@ -60,7 +62,7 @@ class CoursController extends Controller
     public function edit($id)
     {
         $cours = Cours::find($id);
-        $coursEnseignant = Note::with("enseignants")->find($id);
+        $coursEnseignant = Cours::with("enseignants")->find($id);
 
         if ($cours) {
             return response()->json([
@@ -83,6 +85,7 @@ class CoursController extends Controller
             "description" => 'required|String',
             "contenu" => 'required|String',
             "matiere_id" => 'required|integerexists:matieres',
+            "classe_id" => 'required|integerexists:classes',
             "enseignant_id" => 'required|integerexists:enseignants',
 
         ]);
@@ -108,6 +111,7 @@ class CoursController extends Controller
                 "description" => $request->description,
                 "contenu" => $request->contenu,
                 "matiere_id" => $request->matiere_id,
+                "classe_id" => $request->classe_id,
                 "enseignant_id" => $request->enseignant_id,
             ]);
 

@@ -37,8 +37,12 @@ class EnseignantController extends Controller
     public function registerEnseignant(Request $request, PasswordEnseignantService $passwordService)
     {
         $validate = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'prenom' => 'required|string',
             'matricule' => 'required|string',
-            'email' => 'required|string|email|max:255|unique:users',
+            'numero' => 'string',
+            'email' => 'required|string|email',
+            'ecole_id' => 'required|integer|exists:ecoles,id'
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -51,7 +55,11 @@ class EnseignantController extends Controller
         $enseignant = Enseignant::create([
             'matricule' => $request->matricule,
             'email' => $request->email,
-            'password' => $password,
+            'numero' => $request->numero,
+            'prenom' => $request->prenom,
+            'name' => $request->name,
+            'ecole_id' => $request->ecole_id,
+            'mot de passe' => Hash::make($password),
         ]);
         $enseignant->assignRole("enseignant");
         Mail::to($request->email)
@@ -61,14 +69,16 @@ class EnseignantController extends Controller
             'status' => 'success',
             'message' => 'Enseignant créé avec succès',
             'data' => $enseignant,
+            'password' => $password,
+
         ]);
     }
 
     public function loginEnseignant(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'email' => 'required|string|email:unique',
-            'password' => 'required|string',
+            'email' => 'required|string|email|max:255|exists:enseignants',
+            "mot de passe" => 'required|string'
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -97,7 +107,7 @@ class EnseignantController extends Controller
         }
         if (!$enseignant) {
             return response()->json([
-                'message' => 'Aucune enseignant trouver avec ce mail',
+                'message' => 'Aucun enseignant trouver avec ce mail',
             ], 400);
         }
         return response()->json([

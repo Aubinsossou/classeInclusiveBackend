@@ -14,9 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->string("titre");
             $table->string("description");
-            $table->string("contenu");
+            $table->text("contenu");
             $table->unsignedBigInteger('enseignant_id');
             $table->foreign('enseignant_id')->references('id')->on('enseignants');
+            $table->unsignedBigInteger('classe_id');
+            $table->foreign('classe_id')->references('id')->on('classes');
             $table->unsignedBigInteger('matiere_id');
             $table->foreign('matiere_id')->references('id')->on('matieres');
             $table->timestamps();
