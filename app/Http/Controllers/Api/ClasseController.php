@@ -74,7 +74,7 @@ class ClasseController extends Controller
     {
         $validate = Validator::make($request->all(), [
             "name" => 'required|string',
-            "ecole_id" => 'required|integer|exists:ecoles',
+            "ecole_id" => 'required|integer|exists:ecoles,id',
 
         ]);
         if ($validate->fails()) {

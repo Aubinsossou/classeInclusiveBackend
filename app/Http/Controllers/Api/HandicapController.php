@@ -28,7 +28,8 @@ class HandicapController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-           "name" => 'required|string'
+           "name" => 'required|string',
+           "ecole_id" => 'required|integer|exists:ecoles,id'
         ]);
 
         if ($validate->fails()) {
@@ -40,6 +41,7 @@ class HandicapController extends Controller
         $handicape = Handicap::create([
             //dd($request->handicape),
             "name" => $request->name,
+            "ecole_id" => $request->ecole_id,
         ]);
 
         return response()->json([
@@ -70,7 +72,9 @@ class HandicapController extends Controller
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-                      "name" => 'required|string'
+                      "name" => 'required|string',
+           "ecole_id" => 'required|integer|exists:ecoles,id'
+
 
         ]);
         if ($validate->fails()) {
@@ -92,6 +96,7 @@ class HandicapController extends Controller
         if ($handicapeUpdate) {
             $handicapeUpdate->update([
                 "name" => $request->name,
+                "ecoleèid" => $request->ecoleèid,
             ]);
 
             return response()->json([

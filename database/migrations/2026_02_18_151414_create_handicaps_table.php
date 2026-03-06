@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('handicaps', function (Blueprint $table) {
             $table->id();
             $table->string("name");
+              $table->unsignedBigInteger('ecole_id');
+            $table->foreign('ecole_id')->references('id')->on('ecoles');
             $table->timestamps();
         });
     }

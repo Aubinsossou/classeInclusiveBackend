@@ -28,8 +28,9 @@ class ClasseEnseignantController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            "classe_id" => 'required|integer|exists:classes',
-            "enseignant_id" => 'required|integer|exists:enseignants',
+            "classe_id" => 'required|integer|exists:classes,id',
+            "enseignant_id" => 'required|integer|exists:enseignants,id',
+            "ecole_id" => 'required|integer|exists:ecoles,id',
         ]);
 
         if ($validate->fails()) {
@@ -43,6 +44,7 @@ class ClasseEnseignantController extends Controller
           $classeEnsignant =  classe_enseignant::create([
                 'classe_id' => $request->classe_id,
                 'enseignant_id' => $request->enseignant_id,
+                'ecole_id' => $request->ecole_id,
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([

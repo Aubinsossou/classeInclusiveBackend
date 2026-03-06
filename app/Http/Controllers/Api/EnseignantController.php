@@ -117,23 +117,84 @@ class EnseignantController extends Controller
 
     public function getEnseignant()
     {
-        $ecole = Auth::guard('ecole_api')->user()->makeHidden(['password']);
+        $enseignant = Auth::guard('enseignant_api')->user()->makeHidden(['password']);
         ;
-        $ecole->getRoleNames();
+        $enseignant->getRoleNames();
 
-        if ($ecole) {
+        if ($enseignant) {
             return response()->json([
                 "status" => "Success",
-                "message" => " ecole trouver avec success",
-                "data" => $ecole,
+                "message" => " enseignant trouver avec success",
+                "data" => $enseignant,
             ]);
         }
         return response()->json([
             "status" => "Echec",
-            "message" => "Aucune ecole n'a ete trouver",
+            "message" => "Aucune enseignant n'a ete trouver",
         ]);
     }
 
+    public function edit($id)
+    {
+        $enseignant = Enseignant::with('roles')->find($id);
+
+        if ($enseignant) {
+            return response()->json([
+                "status" => "Success",
+                "message" => "Enseignant retrouver",
+                "data" => $enseignant,
+            ]);
+        }
+        return response()->json([
+            "status" => "Echec",
+            "message" => "Enseignant non retrouver",
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validate = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'prenom' => 'required|string',
+            'matricule' => 'required|string',
+            'numero' => 'string',
+            'email' => 'required|string|email',
+            'ecole_id' => 'required|integer|exists:ecoles,id'
+
+        ]);
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => $validate->errors(),
+            ]);
+        }
+
+        $enseignantUpdate = Enseignant::where("id", "=", $id)->get()->first();
+
+        if (!$enseignantUpdate) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => "Aucune Matiere trouver avec cet id",
+            ], 400);
+        }
+
+        if ($enseignantUpdate) {
+            $enseignantUpdate->update([
+                "name" => $request->name,
+                "prenom" => $request->prenom,
+                "matricule" => $request->matricule,
+                "email" => $request->email,
+                "numero" => $request->numero,
+                "ecole_id" => $request->ecole_id,
+            ]);
+
+            return response()->json([
+                "status" => "Success",
+                "message" => " Matiere modifier avec success",
+                "data" => $enseignantUpdate,
+            ]);
+        }
+    }
 
     public function logout(Request $request)
     {

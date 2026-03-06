@@ -44,16 +44,16 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/classe")->controller(Clas
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
-    Route::post("/update", "update");
-    Route::delete("/destroy", "destroy");
+    Route::put("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 Route::middleware("auth:ecole_api")->prefix("/v1/matiere")->controller(MatiereController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
-    Route::post("/update", "update");
-    Route::delete("/destroy", "destroy");
+    Route::post("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 Route::middleware("auth:ecole_api")->prefix("/v1/ecole/eleve")->controller(EleveController::class)->group(function () {
@@ -63,8 +63,10 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/eleve")->controller(Eleve
     Route::delete("/logout", "logout");
 });
 
-Route::middleware("auth:ecole_api")->prefix("/v1/ecole")->controller(EnseignantController::class)->group(function () {
+Route::middleware("auth:ecole_api")->prefix("/v1/ecole/enseignant")->controller(EnseignantController::class)->group(function () {
     Route::get("/index", "index");
+    Route::get("/edit/{id}", "edit");
+    Route::get("/update/{id}", "update");
     Route::post('/registerEnseignant', "registerEnseignant");
     Route::post("/loginEnseignant", "loginEnseignant");
     Route::get("/getEnseignant", "getEnseignant");
@@ -75,40 +77,40 @@ Route::middleware("auth:ecole_api")->prefix("/v1/handicap")->controller(Handicap
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
-    Route::post("/update", "update");
-    Route::delete("/destroy", "destroy");
+    Route::post("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 Route::middleware("auth:enseignant_api")->prefix("/v1/cours")->controller(CoursController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
-    Route::post("/update", "update");
-    Route::delete("/destroy", "destroy");
+    Route::post("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 Route::middleware("auth:enseignant_api")->prefix("/v1/quiz")->controller(QuizController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
-    Route::post("/update", "update");
-    Route::delete("/destroy", "destroy");
+    Route::post("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 Route::middleware("auth:enseignant_api")->prefix("/v1/question")->controller(QuestionController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
-    Route::post("/update", "update");
-    Route::delete("/destroy", "destroy");
+    Route::post("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 Route::middleware("auth:enseignant_api")->prefix("/v1/reponse")->controller(ReponseController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
-    Route::post("/update", "update");
-    Route::delete("/destroy", "destroy");
+    Route::post("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 
@@ -120,8 +122,8 @@ Route::middleware(['auth:enseignant_api'])->group(function () {
 Route::middleware("auth:eleve_api")->prefix("/v1/note")->controller(NoteController::class)->group(function () {
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
-    Route::post("/update", "update");
-    Route::delete("/destroy", "destroy");
+    Route::post("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 
