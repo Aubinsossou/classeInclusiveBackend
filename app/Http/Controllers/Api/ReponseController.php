@@ -9,53 +9,49 @@ use Validator;
 
 class ReponseController extends Controller
 {
-     public function index()
+    public function index()
     {
         $reponses = Reponse::all();
-        if (count($reponses) !== 0) {
+        return response()->json([
+            "status" => "Success",
+            "message" => "listes des Reponses trouver",
+            "data" => $reponses,
+        ]);
+
+    }
+
+    public function store(Request $request)
+    {
+
+        $validate = Validator::make($request->all(), [
+            "listReponse" => 'required|array',
+            "listReponse.*.name" => 'required|string',
+            "listReponse.*.status" => 'required|string',
+            "question_id" => 'required|integer'
+        ]);
+
+        if ($validate->fails()) {
             return response()->json([
-                "status" => "Success",
-                "message" => "listes des Reponses trouver",
-                "data" => $reponses,
+                "status" => "Echec",
+                "message" => $validate->errors(),
+            ], 400);
+        }
+
+        foreach ($request->listReponse as $item) {
+            Reponse::create([
+                'name' => $item['name'],
+                'status' => $item['status'],
+                'question_id' => $request->question_id,
             ]);
         }
+
         return response()->json([
-            "status" => "Echec",
-            "message" => "listes des Reponses non trouver",
+            "status" => "Success",
+            "message" => "Réponses créées avec succès",
+            "data" => $request->listReponse,
         ]);
     }
-
-public function store(Request $request)
-{
-
-    $validate = Validator::make($request->all(), [
-        "listReponse" => 'required|array',
-        "listReponse.*.name" => 'required|string',
-        "listReponse.*.status" => 'required|string',
-        "question_id" => 'required|integer'
-    ]);
-
-    if ($validate->fails()) {
-        return response()->json([
-            "status" => "Echec",
-            "message" => $validate->errors(),
-        ], 400);
-    }
-
-    foreach ($request->listReponse as $item) {
-        Reponse::create([
-            'name' => $item['name'],
-            'status' => $item['status'],
-            'question_id' => $request->question_id,
-        ]);
-    }
-
-    return response()->json([
-        "status" => "Success",
-        "message" => "Réponses créées avec succès",
-        "data" => $request->listReponse,
-    ]);
-}    public function edit($id)
+    public function edit($id)
     {
         $reponse = Reponse::find($id);
         if ($reponse) {

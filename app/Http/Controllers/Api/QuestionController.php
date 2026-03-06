@@ -12,16 +12,10 @@ class QuestionController extends Controller
     public function index()
     {
         $questions = Question::all();
-        if (count($questions) !== 0) {
-            return response()->json([
-                "status" => "Success",
-                "message" => "listes des Questions trouver",
-                "data" => $questions,
-            ]);
-        }
         return response()->json([
-            "status" => "Echec",
-            "message" => "listes des Questions non trouver",
+            "status" => "Success",
+            "message" => "listes des Questions trouver",
+            "data" => $questions,
         ]);
     }
 

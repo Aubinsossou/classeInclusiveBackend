@@ -12,16 +12,10 @@ class QuizController extends Controller
     public function index()
     {
         $quiz = Quiz::all();
-        if (count($quiz) !== 0) {
-            return response()->json([
-                "status" => "Success",
-                "message" => "listes des quiz trouver",
-                "data" => $quiz,
-            ]);
-        }
         return response()->json([
-            "status" => "Echec",
-            "message" => "listes des quiz non trouver",
+            "status" => "Success",
+            "message" => "listes des quiz trouver",
+            "data" => $quiz,
         ]);
     }
 

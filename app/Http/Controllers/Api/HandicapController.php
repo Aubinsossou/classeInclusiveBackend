@@ -9,27 +9,23 @@ use Validator;
 
 class HandicapController extends Controller
 {
-      public function index()
+    public function index()
     {
         $handicapes = Handicap::all();
-        if (count($handicapes) !== 0) {
-            return response()->json([
-                "status" => "Success",
-                "message" => "listes des handicapes trouver",
-                "data" => $handicapes,
-            ]);
-        }
+
         return response()->json([
-            "status" => "Echec",
-            "message" => "listes des handicapes non trouver",
+            "status" => "Success",
+            "message" => "listes des handicapes trouver",
+            "data" => $handicapes,
         ]);
+
     }
 
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-           "name" => 'required|string',
-           "ecole_id" => 'required|integer|exists:ecoles,id'
+            "name" => 'required|string',
+            "ecole_id" => 'required|integer|exists:ecoles,id'
         ]);
 
         if ($validate->fails()) {
@@ -72,8 +68,8 @@ class HandicapController extends Controller
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-                      "name" => 'required|string',
-           "ecole_id" => 'required|integer|exists:ecoles,id'
+            "name" => 'required|string',
+            "ecole_id" => 'required|integer|exists:ecoles,id'
 
 
         ]);

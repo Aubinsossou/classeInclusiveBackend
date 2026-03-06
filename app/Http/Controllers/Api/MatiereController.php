@@ -12,24 +12,20 @@ class MatiereController extends Controller
     public function index()
     {
         $matieres = Matiere::all();
-        if (count($matieres) !== 0) {
-            return response()->json([
-                "status" => "Success",
-                "message" => "listes des matieres trouver",
-                "data" => $matieres,
-            ]);
-        }
+
         return response()->json([
-            "status" => "Echec",
-            "message" => "listes des matiere non trouver",
+            "status" => "Success",
+            "message" => "listes des matieres trouver",
+            "data" => $matieres,
         ]);
+
     }
 
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-           "name" => 'required|string',
-           "ecole_id" => 'required|integer|exists:ecoles'
+            "name" => 'required|string',
+            "ecole_id" => 'required|integer|exists:ecoles'
         ]);
 
         if ($validate->fails()) {
@@ -72,8 +68,8 @@ class MatiereController extends Controller
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-                      "name" => 'required|string',
-           "ecole_id" => 'required|integer|exists:ecoles'
+            "name" => 'required|string',
+            "ecole_id" => 'required|integer|exists:ecoles'
 
 
         ]);

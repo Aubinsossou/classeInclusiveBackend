@@ -27,18 +27,13 @@ class EcoleController extends Controller
     {
         $ecoles = Ecole::all();
 
-        if ($ecoles) {
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Liste des ecoles',
-                'data' => $ecoles,
-            ]);
-        }
         return response()->json([
-            'status' => 'Echec',
-            'message' => 'Liste des ecoles non trouver'
+            'status' => 'success',
+            'message' => 'Liste des ecoles',
+            'data' => $ecoles,
         ]);
+
 
     }
     public function registerEcole(Request $request)
@@ -57,9 +52,9 @@ class EcoleController extends Controller
             ], 400);
         }
 
-    /*     Role::create(["name" => "eleve",'guard_name' => 'eleve_api']);
+        /*     Role::create(["name" => "eleve",'guard_name' => 'eleve_api']);
 
-        dd(); */
+            dd(); */
         $ecole = Ecole::create([
             'name' => $request->name,
             'email' => $request->email,

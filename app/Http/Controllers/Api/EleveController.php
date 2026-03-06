@@ -20,16 +20,11 @@ class EleveController extends Controller
     public function index()
     {
         $eleves = Eleve::all();
-        if ($eleves) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Liste des élèves',
-                'data' => $eleves
-            ]);
-        }
+
         return response()->json([
-            'status' => 'echec',
-            'messge' => 'Liste des eleves non trouver'
+            'status' => 'success',
+            'message' => 'Liste des élèves',
+            'data' => $eleves
         ]);
     }
 
@@ -68,7 +63,7 @@ class EleveController extends Controller
             'data' => $eleve,
         ]);
     }
-     public function loginEleve(Request $request)
+    public function loginEleve(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'nom' => 'required|string',
@@ -110,7 +105,7 @@ class EleveController extends Controller
         ], 400);
     }
 
-     public function getEleve()
+    public function getEleve()
     {
         $ecole = Auth::guard('ecole_api')->user()->makeHidden(['password']);
         ;

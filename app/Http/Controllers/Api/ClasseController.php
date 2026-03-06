@@ -13,17 +13,13 @@ class ClasseController extends Controller
     public function index()
     {
         $classes = Classe::all();
-        if (count($classes) !== 0) {
+
             return response()->json([
                 "status" => "Success",
                 "message" => "listes des classes trouver",
                 "data" => $classes,
             ]);
-        }
-        return response()->json([
-            "status" => "Echec",
-            "message" => "listes des classes non trouver",
-        ]);
+ 
     }
 
     public function store(Request $request)

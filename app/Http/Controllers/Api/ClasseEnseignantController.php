@@ -12,17 +12,13 @@ class ClasseEnseignantController extends Controller
     public function index()
     {
         $classesEnseignant = classe_enseignant::all();
-        if (count($classesEnseignant) !== 0) {
+
             return response()->json([
                 "status" => "Success",
                 "message" => "listes des classes et Enseignants trouver",
                 "data" => $classesEnseignant,
             ]);
-        }
-        return response()->json([
-            "status" => "Echec",
-            "message" => "listes des classes Enseignants non trouver",
-        ]);
+
     }
 
     public function store(Request $request)

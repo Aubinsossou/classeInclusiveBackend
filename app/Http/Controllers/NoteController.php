@@ -11,17 +11,12 @@ class NoteController extends Controller
     public function index()
     {
         $notes = Note::all();
-        if (count($notes) !== 0) {
-            return response()->json([
-                "status" => "Success",
-                "message" => "listes des notes trouver",
-                "data" => $notes,
-            ]);
-        }
         return response()->json([
-            "status" => "Echec",
-            "message" => "listes des notes non trouver",
+            "status" => "Success",
+            "message" => "listes des notes trouver",
+            "data" => $notes,
         ]);
+
     }
 
     public function store(Request $request)

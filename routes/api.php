@@ -73,7 +73,7 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/enseignant")->controller(
     Route::delete("/logout", "logout");
 });
 
-Route::middleware("auth:ecole_api")->prefix("/v1/handicap")->controller(HandicapController::class)->group(function () {
+Route::middleware("auth:ecole_api")->prefix("/v1/ecole/handicap")->controller(HandicapController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");

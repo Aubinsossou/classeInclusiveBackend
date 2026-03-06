@@ -9,19 +9,14 @@ use Validator;
 
 class CleveHandicapController extends Controller
 {
-     public function index()
+    public function index()
     {
         $eleveHandicap = eleveHandicap::all();
-        if (count($eleveHandicap) !== 0) {
-            return response()->json([
-                "status" => "Success",
-                "message" => "listes des eleves et leurs handicapes trouver",
-                "data" => $eleveHandicap,
-            ]);
-        }
+
         return response()->json([
-            "status" => "Echec",
+            "status" => "Success",
             "message" => "listes des eleves et leurs handicapes trouver",
+            "data" => $eleveHandicap,
         ]);
     }
 
@@ -40,7 +35,7 @@ class CleveHandicapController extends Controller
         }
 
         try {
-          $elevesHandicap =  eleveHandicap::create([
+            $elevesHandicap = eleveHandicap::create([
                 'eleve_id' => $request->eleve_id,
                 'handicap_id' => $request->handicap_id,
             ]);

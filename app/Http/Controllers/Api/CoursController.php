@@ -12,17 +12,12 @@ class CoursController extends Controller
     public function index()
     {
         $cours = Cours::all();
-        if (count($cours) !== 0) {
+
             return response()->json([
                 "status" => "Success",
                 "message" => "listes des cours trouver",
                 "data" => $cours,
             ]);
-        }
-        return response()->json([
-            "status" => "Echec",
-            "message" => "listes des cours non trouver",
-        ]);
     }
 
     public function store(Request $request)
