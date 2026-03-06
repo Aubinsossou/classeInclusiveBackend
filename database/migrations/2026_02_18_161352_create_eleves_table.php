@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->foreign('handicap_id')->references('id')->on('handicaps');
             $table->unsignedBigInteger('classe_id');
             $table->foreign('classe_id')->references('id')->on('classes');
-            $table->integer("numero parent");
+            $table->integer("numeroParent");
             $table->timestamps();
         });
     }

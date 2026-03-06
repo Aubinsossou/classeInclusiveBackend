@@ -48,7 +48,7 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/classe")->controller(Clas
     Route::delete("/destroy/{id}", "destroy");
 });
 
-Route::middleware("auth:ecole_api")->prefix("/v1/matiere")->controller(MatiereController::class)->group(function () {
+Route::middleware("auth:ecole_api")->prefix("/v1/ecole/matiere")->controller(MatiereController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
@@ -59,8 +59,9 @@ Route::middleware("auth:ecole_api")->prefix("/v1/matiere")->controller(MatiereCo
 Route::middleware("auth:ecole_api")->prefix("/v1/ecole/eleve")->controller(EleveController::class)->group(function () {
     Route::get("/index", "index");
     Route::post('/registerEleve', "registerEleve");
-    Route::get("/getEleve", "getEleve");
-    Route::delete("/logout", "logout");
+    Route::post("/edit/{id}", "edit");
+    Route::post("/update/{id}", "update");
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 Route::middleware("auth:ecole_api")->prefix("/v1/ecole/enseignant")->controller(EnseignantController::class)->group(function () {
@@ -121,9 +122,12 @@ Route::middleware(['auth:enseignant_api'])->group(function () {
 
 Route::middleware("auth:eleve_api")->prefix("/v1/note")->controller(NoteController::class)->group(function () {
     Route::post("/store", "store");
-    Route::get("/edit/{id}", "edit");
-    Route::post("/update/{id}", "update");
-    Route::delete("/destroy/{id}", "destroy");
+});
+
+Route::middleware("auth:eleve_api")->prefix("/v1/eleve")->controller(EleveController::class)->group(function () {
+
+    Route::get("/getEleve", "getEleve");
+    Route::delete("/logout", "logout");
 });
 
 

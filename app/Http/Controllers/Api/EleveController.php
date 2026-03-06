@@ -31,7 +31,7 @@ class EleveController extends Controller
     public function registerEleve(Request $request, PasswordEleveService $passwordService)
     {
         $validate = Validator::make($request->all(), [
-            'nom' => 'required|string',
+            'name' => 'required|string',
             'prenom' => 'required|string',
             'numeroParent' => 'required|integer',
             'handicap_id' => 'required|integer|exists:handicaps',
@@ -46,7 +46,7 @@ class EleveController extends Controller
         $code = $passwordService->generateSecurePassword();
 
         $eleve = Eleve::create([
-            'nom' => $request->nom,
+            'name' => $request->name,
             'prenom' => $request->prenom,
             'numeroParent' => $request->numeroParent,
             'handicap_id' => $request->handicap_id,
@@ -68,7 +68,7 @@ class EleveController extends Controller
         $validate = Validator::make($request->all(), [
             'nom' => 'required|string',
             'prenom' => 'required|string',
-            'password' => 'required|string',
+            'code' => 'required|string',
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -77,11 +77,11 @@ class EleveController extends Controller
             ], 400);
         }
 
-        $eleve = Eleve::where('nom', $request->nom && 'prenom', $request->prenom)->get()->first();
+        $eleve = Eleve::where('code', $request->code)->get()->first();
         $eleve->getRoleNames();
 
 
-        if ($eleve && Hash::check($request->password, $eleve->password)) {
+        if ($eleve && Hash::check($request->code, $eleve->code)) {
             Auth::login($eleve);
             $accessToken = $eleve->createToken('eleveToken')->accessToken;
             $refreshToken = $eleve->createToken('refreshEleveToken')->accessToken;

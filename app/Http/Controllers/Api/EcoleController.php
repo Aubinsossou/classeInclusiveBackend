@@ -41,7 +41,7 @@ class EcoleController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'numero' => 'string',
+            'numero' => 'required|string',
             'password' => 'required|string|min:4',
 
         ]);
