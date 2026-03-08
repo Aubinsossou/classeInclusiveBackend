@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ClasseController;
+use App\Http\Controllers\Api\ClasseEnseignantController;
 use App\Http\Controllers\Api\CoursController;
 use App\Http\Controllers\Api\EcoleController;
 use App\Http\Controllers\Api\EleveController;
@@ -41,7 +42,7 @@ Route::middleware('auth:ecole_api')->prefix("/v1/ecole")->controller(EcoleContro
 });
 
 Route::middleware("auth:ecole_api")->prefix("/v1/ecole/classe")->controller(ClasseController::class)->group(function () {
-    Route::get("/index", "index");
+    Route::get("/index/{id}", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
     Route::put("/update/{id}", "update");
@@ -49,7 +50,7 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/classe")->controller(Clas
 });
 
 Route::middleware("auth:ecole_api")->prefix("/v1/ecole/matiere")->controller(MatiereController::class)->group(function () {
-    Route::get("/index", "index");
+    Route::get("/index/{id}", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
     Route::post("/update/{id}", "update");
@@ -65,11 +66,24 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/eleve")->controller(Eleve
 });
 
 Route::middleware("auth:ecole_api")->prefix("/v1/ecole/enseignant")->controller(EnseignantController::class)->group(function () {
-    Route::get("/index", "index");
+    Route::get("/index/{id}", "index");
     Route::get("/edit/{id}", "edit");
-    Route::get("/update/{id}", "update");
+    Route::put("/update/{id}", "update");
+    Route::put("/update/assigne/classe/{id}", "updateClasse");
     Route::post('/registerEnseignant', "registerEnseignant");
-    Route::post("/loginEnseignant", "loginEnseignant");
+    Route::get("/getEnseignant", "getEnseignant");
+    Route::delete("/destroy/{id}", "destroy");
+
+});
+
+Route::middleware("auth:ecole_api")->prefix("/v1/ecole/enseignant/enseignantClasse")->controller(ClasseEnseignantController::class)->group(function () {
+    Route::post("/store", "store");
+
+});
+
+Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant")->controller(EnseignantController::class)->group(function () {
+
+    Route::get("/update/{id}", "update");
     Route::get("/getEnseignant", "getEnseignant");
     Route::delete("/logout", "logout");
 });
@@ -95,7 +109,7 @@ Route::middleware("auth:enseignant_api")->prefix("/v1/quiz")->controller(QuizCon
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
     Route::post("/update/{id}", "update");
-    Route::delete("/destroy/{id}", "destroy");
+    Route::delete("/destroy/{id}", "destroy");  
 });
 
 Route::middleware("auth:enseignant_api")->prefix("/v1/question")->controller(QuestionController::class)->group(function () {

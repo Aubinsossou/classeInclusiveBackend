@@ -29,21 +29,35 @@ class Enseignant extends Authenticatable
         'updated_at'
     ];
 
-     public function ecole(): BelongsTo
+    public function ecole(): BelongsTo
     {
         return $this->belongsTo(Ecole::class);
     }
 
-    public function classes(): BelongsToMany
+    public function classe(): BelongsTo
     {
-        return $this->belongsToMany(
-            Classe::class,
-            'classe_enseignant'
-        );
+        return $this->belongsTo(Classe::class, 'classe_id');
     }
-
     public function cours(): HasMany
     {
         return $this->hasMany(Cours::class);
+    }
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class, 'enseignant_id');
+    }
+
+    public function matiere()
+    {
+        return $this->belongsTo(Matiere::class, 'matiere_id');
+    }
+    public function scopeFull($query)
+    {
+        return $query->with([
+            'ecole',
+            'classe',
+            'cours',
+            'cours.medias'
+        ]);
     }
 }

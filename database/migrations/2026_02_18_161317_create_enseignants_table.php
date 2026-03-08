@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string("name");
             $table->string("prenom");
             $table->string( "matricule");
-            $table->integer( "numero")->nullable();
+            $table->unsignedBigInteger( "numero")->nullable();
             $table->unsignedBigInteger('classe_id')->nullable();
             $table->foreign('classe_id')->references('id')->on('classes');
             $table->unsignedBigInteger('ecole_id');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 
+use App\Models\classe_enseignant;
 use App\Models\Enseignant;
 use Illuminate\Http\Request;
 
@@ -18,17 +19,22 @@ use Validator;
 
 class EnseignantController extends Controller
 {
-    public function index()
+    public function index($ecoleId)
     {
-        $enseignants = Enseignant::all();
+        $enseignants = Enseignant::where('ecole_id', $ecoleId)
+            ->with('classe')
+            ->get()
+            ->map(function ($enseignant) {
+                $enseignant->date_creation = $enseignant->created_at->format('d/m/Y');
+                return $enseignant;
+            });
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Liste des élèves',
+            'message' => 'Liste des enseignants',
             'data' => $enseignants
         ]);
     }
-
     public function registerEnseignant(Request $request, PasswordEnseignantService $passwordService)
     {
         $validate = Validator::make($request->all(), [
@@ -54,8 +60,15 @@ class EnseignantController extends Controller
             'prenom' => $request->prenom,
             'name' => $request->name,
             'ecole_id' => $request->ecole_id,
-            'mot de passe' => Hash::make($password),
+            'password' => Hash::make($password),
         ]);
+        $exists = Role::where('name', 'enseignant')
+            ->where('guard_name', 'enseignant_api')
+            ->exists();
+
+        if (!$exists) {
+            Role::create(["name" => "enseignant", "guard_name" => "enseignant_api"]);
+        }
         $enseignant->assignRole("enseignant");
         Mail::to($request->email)
             ->send(new EnseignantPasswordMail($enseignant, $password));
@@ -73,7 +86,7 @@ class EnseignantController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255|exists:enseignants',
-            "mot de passe" => 'required|string'
+            "password" => 'required|string'
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -112,20 +125,36 @@ class EnseignantController extends Controller
 
     public function getEnseignant()
     {
-        $enseignant = Auth::guard('enseignant_api')->user()->makeHidden(['password']);
-        ;
-        $enseignant->getRoleNames();
+        $enseignant = Auth::guard('enseignant_api')->user()->load([
+            'ecole.matieres.cours' => function ($query) {
+                $query->where('enseignant_id', Auth::guard('enseignant_api')->id());
+            },
+            'ecole.matieres.cours.quizzes.questions.reponses',
+            'classe.eleves'
+        ]);
 
-        if ($enseignant) {
+        if (!$enseignant) {
             return response()->json([
-                "status" => "Success",
-                "message" => " enseignant trouver avec success",
-                "data" => $enseignant,
+                "status" => "Echec",
+                "message" => "Aucun enseignant trouvé",
             ]);
         }
+
+        /*    $enseignant->load([
+               'ecole',
+               'classes',
+               'classes.eleves',
+               'cours',
+               'cours.medias'
+           ]);
+    */
+        $enseignant->makeHidden(['password']);
+
         return response()->json([
-            "status" => "Echec",
-            "message" => "Aucune enseignant n'a ete trouver",
+            "status" => "Success",
+            "message" => "Enseignant trouvé avec succès",
+            "data" => $enseignant,
+            "roles" => $enseignant->getRoleNames()
         ]);
     }
 
@@ -189,6 +218,58 @@ class EnseignantController extends Controller
                 "data" => $enseignantUpdate,
             ]);
         }
+    }
+    public function updateClasse(Request $request, $id)
+    {
+        $validate = Validator::make($request->all(), [
+            'classe_id' => 'required|integer|exists:classes,id'
+
+        ]);
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => $validate->errors(),
+            ]);
+        }
+
+        $enseignantClasseAssigne = Enseignant::where("id", "=", $id)->get()->first();
+
+        if (!$enseignantClasseAssigne) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => "Aucun enseignant trouver avec cet id",
+            ], 400);
+        }
+
+        if ($enseignantClasseAssigne) {
+            $enseignantClasseAssigne->update([
+
+                "classe_id" => $request->classe_id,
+            ]);
+            $enseignantClasseAssigne->load('classe');
+            return response()->json([
+                "status" => "Success",
+                "message" => " Matiere modifier avec success",
+                "data" => $enseignantClasseAssigne,
+            ]);
+        }
+    }
+    public function destroy($id)
+    {
+        $enseignant = Enseignant::find($id);
+        if ($id) {
+            //  classe_enseignant::where('enseignant_id', $id)->delete();
+            $enseignant->delete();
+
+            return response()->json([
+                "status" => "Success",
+                "message" => " Enseignant supprimer avec success",
+            ]);
+        }
+        return response()->json([
+            "status" => "Echec",
+            "message" => " Aucun Enseignant trouver avec cet id pour suppression",
+        ]);
     }
 
     public function logout(Request $request)

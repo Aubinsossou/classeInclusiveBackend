@@ -27,7 +27,7 @@ class ReponseController extends Controller
             "listReponse" => 'required|array',
             "listReponse.*.name" => 'required|string',
             "listReponse.*.status" => 'required|string',
-            "question_id" => 'required|integer'
+            "question_id" => 'required|integer|exists:questions,id'
         ]);
 
         if ($validate->fails()) {
@@ -71,7 +71,7 @@ class ReponseController extends Controller
     {
         $validate = Validator::make($request->all(), [
             "name" => "required|string|max:1000",
-            "question_id" => "required|integer",
+            "question_id" => "required|integer|questions,id",
         ]);
         if ($validate->fails()) {
             return response()->json([

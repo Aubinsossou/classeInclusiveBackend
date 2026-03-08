@@ -10,16 +10,16 @@ use Validator;
 class ClasseController extends Controller
 {
 
-    public function index()
+    public function index($ecole_id)
     {
-        $classes = Classe::all();
+        $classes = Classe::where("ecole_id",$ecole_id)->with("eleves","enseignant")->get();
 
             return response()->json([
                 "status" => "Success",
                 "message" => "listes des classes trouver",
                 "data" => $classes,
             ]);
- 
+
     }
 
     public function store(Request $request)

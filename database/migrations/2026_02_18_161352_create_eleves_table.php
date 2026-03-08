@@ -15,12 +15,12 @@ return new class extends Migration {
             $table->string("name");
             $table->string("prenom");
             $table->integer("code");
-            $table->string('date de naissance');
+            $table->string('dateOfNaissance');
             $table->unsignedBigInteger('handicap_id');
             $table->foreign('handicap_id')->references('id')->on('handicaps');
             $table->unsignedBigInteger('classe_id');
             $table->foreign('classe_id')->references('id')->on('classes');
-            $table->integer("numeroParent");
+            $table->unsignedBigInteger("numeroParent");
             $table->timestamps();
         });
     }

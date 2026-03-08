@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Matiere extends Model
 {
@@ -11,5 +13,9 @@ class Matiere extends Model
       public function cours(): HasMany
     {
         return $this->hasMany(Cours::class);
+    }
+     public function ecole(): BelongsTo
+    {
+        return $this->belongsTo(Ecole::class);
     }
 }

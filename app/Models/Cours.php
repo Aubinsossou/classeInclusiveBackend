@@ -28,4 +28,9 @@ class Cours extends Model
     {
         return $this->hasMany(VideoCours::class);
     }
+    public function quiz()
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
 }

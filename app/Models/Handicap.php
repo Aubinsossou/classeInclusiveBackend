@@ -3,15 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Handicap extends Model
 {
     protected $guarded = [];
-      public function eleves()
-    {
-        return $this->belongsToMany(
-            Eleve::class,
-            'affecters'
-        );
-    }
+    public function eleves(): HasMany
+{
+    return $this->hasMany(Eleve::class, 'handicap_id');
+}
 }

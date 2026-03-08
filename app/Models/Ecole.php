@@ -37,7 +37,10 @@ class Ecole extends Authenticatable
     {
         return $this->hasMany(Enseignant::class);
     }
-
+   public function matieres()
+    {
+        return $this->hasMany(Matiere::class);
+    }
     public function eleves(): HasManyThrough
     {
         return $this->hasManyThrough(

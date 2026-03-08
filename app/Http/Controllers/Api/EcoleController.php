@@ -61,7 +61,13 @@ class EcoleController extends Controller
             'numero' => $request->numero,
             'password' => Hash::make($request->password),
         ]);
+        $exists = Role::where('name', 'ecole')
+            ->where('guard_name', 'ecole_api')
+            ->exists();
 
+        if (!$exists) {
+            Role::create(["name" => "ecole", "guard_name" => "ecole_api"]);
+        }
         $ecole->assignRole("ecole");
 
 

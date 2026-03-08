@@ -32,14 +32,10 @@ class Eleve extends Authenticatable
         return $this->belongsTo(Classe::class);
     }
 
-    public function handicaps(): BelongsToMany
+    public function handicap(): BelongsTo
     {
-        return $this->belongsToMany(
-            Handicap::class,
-            'eleveHandicap'
-        );
+        return $this->belongsTo(Handicap::class, 'handicap_id');
     }
-
     public function notes(): HasMany
     {
         return $this->hasMany(Note::class);

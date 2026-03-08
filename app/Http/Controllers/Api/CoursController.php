@@ -26,9 +26,9 @@ class CoursController extends Controller
             "titre" => 'required|String',
             "description" => 'required|String',
             "contenu" => 'required|String',
-            "matiere_id" => 'required|integerexists:matieres',
-            "classe_id" => 'required|integerexists:classes',
-            "enseignant_id" => 'required|integerexists:enseignants',
+            "matiere_id" => 'required|integerexists:matieres,id',
+            "classe_id" => 'required|integerexists:classes,id',
+            "enseignant_id" => 'required|integerexists:enseignants,id',
         ]);
 
         if ($validate->fails()) {
@@ -79,9 +79,9 @@ class CoursController extends Controller
             "titre" => 'required|String',
             "description" => 'required|String',
             "contenu" => 'required|String',
-            "matiere_id" => 'required|integerexists:matieres',
-            "classe_id" => 'required|integerexists:classes',
-            "enseignant_id" => 'required|integerexists:enseignants',
+            "matiere_id" => 'required|integerexists:matieres,id',
+            "classe_id" => 'required|integerexists:classes,id',
+            "enseignant_id" => 'required|integerexists:enseignants,id',
 
         ]);
         if ($validate->fails()) {

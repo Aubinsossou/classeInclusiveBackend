@@ -24,7 +24,8 @@ class QuizController extends Controller
 
         $validate = Validator::make($request->all(), [
             "name" => 'required|string',
-            "cours_id" => 'required|integer',
+            "cours_id" => 'required|integer|exists:cours,id',
+            "enseignant_id" => 'required|integer|exists:enseignants,id',
         ]);
 
         if ($validate->fails()) {
@@ -37,6 +38,7 @@ class QuizController extends Controller
         Quiz::create([
             'name' => $request->name,
             'cours_id' => $request->cours_id,
+            'enseignant_id' => $request->enseignant_id,
         ]);
 
         return response()->json([
@@ -65,7 +67,8 @@ class QuizController extends Controller
     {
         $validate = Validator::make($request->all(), [
             "name" => 'required|string',
-            "cours_id" => 'required|integer',
+            "cours_id" => 'required|integer|exists:cours,id',
+            "enseignant_id" => 'required|integer|exists:enseignants,id',
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -87,6 +90,8 @@ class QuizController extends Controller
             $quizUpdate->update([
                 "name" => $request->name,
                 "cours_id" => $request->cours_id,
+            'enseignant_id' => $request->enseignant_id,
+
             ]);
 
             return response()->json([

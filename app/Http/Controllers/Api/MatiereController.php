@@ -9,9 +9,9 @@ use Validator;
 
 class MatiereController extends Controller
 {
-    public function index()
+    public function index($ecole_id)
     {
-        $matieres = Matiere::all();
+        $matieres = Matiere::where("ecole_id",$ecole_id)->with("ecole")->get();
 
         return response()->json([
             "status" => "Success",
@@ -25,7 +25,7 @@ class MatiereController extends Controller
     {
         $validate = Validator::make($request->all(), [
             "name" => 'required|string',
-            "ecole_id" => 'required|integer|exists:ecoles'
+            "ecole_id" => 'required|integer|exists:ecoles,id'
         ]);
 
         if ($validate->fails()) {

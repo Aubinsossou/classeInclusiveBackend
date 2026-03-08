@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quiz extends Model
 {
+      protected $table = 'quizzes';
     protected $guarded = [];
 
     public function cours(): BelongsTo
@@ -24,4 +25,11 @@ class Quiz extends Model
     {
         return $this->hasMany(Note::class);
     }
+    public function enseignant()
+    {
+        return $this->belongsTo(Enseignant::class);
+    }
+    public function reponses() {
+    return $this->hasMany(Reponse::class, 'question_id');
+}
 }

@@ -19,8 +19,7 @@ class EleveController extends Controller
 {
     public function index()
     {
-        $eleves = Eleve::all();
-
+     $eleves =  Eleve::with(['classe', 'handicap'])->get();
         return response()->json([
             'status' => 'success',
             'message' => 'Liste des élèves',
@@ -34,8 +33,9 @@ class EleveController extends Controller
             'name' => 'required|string',
             'prenom' => 'required|string',
             'numeroParent' => 'required|integer',
-            'handicap_id' => 'required|integer|exists:handicaps',
-            'classe_id' => 'required|integer|exists:classes',
+            'handicap_id' => 'required|integer|exists:handicaps,id',
+            'dateOfNaissance' => 'required|String',
+            'classe_id' => 'required|integer|exists:classes,id',
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -49,11 +49,18 @@ class EleveController extends Controller
             'name' => $request->name,
             'prenom' => $request->prenom,
             'numeroParent' => $request->numeroParent,
+            'dateOfNaissance' => $request->dateOfNaissance,
             'handicap_id' => $request->handicap_id,
             'classe_id' => $request->classe_id,
             'code' => $code,
         ]);
+        $exists = Role::where('name', 'eleve')
+            ->where('guard_name', 'eleve_api')
+            ->exists();
 
+        if (!$exists) {
+            Role::create(["name" => "eleve", "guard_name" => "eleve_api"]);
+        }
 
         $eleve->assignRole("eleve");
 
