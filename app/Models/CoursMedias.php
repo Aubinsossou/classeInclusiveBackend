@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CoursMedias extends Model
 {
-     public function cours(): BelongsTo {
+
+    protected $guarded = [];
+    public function cours(): BelongsTo
+    {
         return $this->belongsTo(Cours::class);
     }
 }

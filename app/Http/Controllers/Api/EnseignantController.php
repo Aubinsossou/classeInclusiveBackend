@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\classe_enseignant;
 use App\Models\Cours;
+use App\Models\Eleve;
 use App\Models\Enseignant;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
@@ -134,9 +135,11 @@ class EnseignantController extends Controller
             },
             'classe.eleves',
         ]);
-
-        $nombreCours = Cours::where("enseignant_id",$enseignant->id)->get();
-        $nombreQuiz = Quiz::where("enseignant_id",$enseignant->id)->get();
+        $nombreCours = Cours::where("enseignant_id", $enseignant->id)->get();
+        $nombreQuiz = Quiz::where("enseignant_id", $enseignant->id)->get();
+        $nombreElevesConnectes = Eleve::where('classe_id', $enseignant->classe_id)
+            ->where('is_connect', 'true')
+            ->count();
 
         if (!$enseignant) {
             return response()->json([
@@ -145,14 +148,6 @@ class EnseignantController extends Controller
             ]);
         }
 
-        /*    $enseignant->load([
-               'ecole',
-               'classes',
-               'classes.eleves',
-               'cours',
-               'cours.medias'
-           ]);
-    */
         $enseignant->makeHidden(['password']);
 
         return response()->json([
@@ -162,6 +157,7 @@ class EnseignantController extends Controller
             "roles" => $enseignant->getRoleNames(),
             "nombreCours" => $nombreCours,
             "nombreQuiz" => $nombreQuiz,
+            "nombreElevesConnectes" => $nombreElevesConnectes,
         ]);
     }
 

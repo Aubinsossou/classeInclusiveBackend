@@ -141,6 +141,7 @@ Route::middleware("auth:eleve_api")->prefix("/v1/note")->controller(NoteControll
 Route::middleware("auth:eleve_api")->prefix("/v1/eleve")->controller(EleveController::class)->group(function () {
 
     Route::get("/getEleve", "getEleve");
+    Route::post("/connexion/{id}", "connect");
     Route::delete("/logout", "logout");
 });
 

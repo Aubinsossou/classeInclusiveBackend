@@ -8,7 +8,6 @@ use App\Models\CoursMedias;
 use Auth;
 use Illuminate\Http\Request;
 use Validator;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class CoursController extends Controller
 {
@@ -57,24 +56,6 @@ class CoursController extends Controller
             ], 422);
         }
 
-        // Validation manuelle des médias (Laravel gère mal medias.*.file avec multipart)
-        if ($request->hasFile('medias')) {
-            foreach ($request->file('medias') as $index => $item) {
-                if (!isset($item['file']) || !$item['file']->isValid()) {
-                    return response()->json([
-                        'errors'  => ["medias.$index.file" => ['Fichier invalide ou manquant.']],
-                        'message' => 'Validation échoué',
-                    ], 422);
-                }
-                if (!isset($item['type']) || !in_array($item['type'], ['video', 'image', 'audio'])) {
-                    return response()->json([
-                        'errors'  => ["medias.$index.type" => ['Type invalide.']],
-                        'message' => 'Validation échoué',
-                    ], 422);
-                }
-            }
-        }
-
         $cours = Cours::create([
             'title'         => $request->title,
             'description'   => $request->description,
@@ -85,24 +66,29 @@ class CoursController extends Controller
             'enseignant_id' => $enseignant->id,
         ]);
 
-        // Upload médias sur Cloudinary
-        if ($request->hasFile('medias')) {
-            foreach ($request->file('medias') as $index => $item) {
-                $type         = $request->input("medias.$index.type");
-                $ordre        = $request->input("medias.$index.ordre", $index);
+        if ($request->hasFile('medias_files')) {
+            foreach ($request->file('medias_files') as $index => $file) {
+                $type  = $request->input("medias_types.{$index}");
+                $ordre = $request->input("medias_ordres.{$index}", $index);
+
+                if (!$file || !$file->isValid()) continue;
+
                 $folder       = 'classe_inclusive/cours/' . $type . 's';
                 $resourceType = $type === 'image' ? 'image' : 'video';
 
-                $result = Cloudinary::upload($item['file']->getRealPath(), [
-                    'folder'        => $folder,
-                    'resource_type' => $resourceType,
-                ]);
+                $result = app(\Cloudinary\Cloudinary::class)->uploadApi()->upload(
+                    $file->getRealPath(),
+                    [
+                        'folder'        => $folder,
+                        'resource_type' => $resourceType,
+                    ]
+                );
 
                 CoursMedias::create([
                     'cours_id'  => $cours->id,
                     'type'      => $type,
-                    'url'       => $result->getSecurePath(),
-                    'public_id' => $result->getPublicId(),
+                    'url'       => $result['secure_url'],
+                    'public_id' => $result['public_id'],
                     'ordre'     => $ordre,
                 ]);
             }
@@ -122,17 +108,6 @@ class CoursController extends Controller
             ->where('enseignant_id', $enseignant->id)
             ->firstOrFail();
 
-        if ($request->hasFile('medias')) {
-            foreach ($request->file('medias') as $index => $item) {
-                if (!isset($item['file']) || !$item['file']->isValid()) {
-                    return response()->json([
-                        'errors'  => ["medias.$index.file" => ['Fichier invalide ou manquant.']],
-                        'message' => 'Validation échoué',
-                    ], 422);
-                }
-            }
-        }
-
         $cours->update([
             'title'        => $request->title        ?? $cours->title,
             'description'  => $request->description  ?? $cours->description,
@@ -144,24 +119,30 @@ class CoursController extends Controller
                 : $cours->is_published,
         ]);
 
-        if ($request->hasFile('medias')) {
-            foreach ($request->file('medias') as $index => $item) {
-                $type         = $request->input("medias.$index.type");
-                $ordre        = $request->input("medias.$index.ordre", $cours->medias()->count() + $index);
+        if ($request->hasFile('medias_files')) {
+            foreach ($request->file('medias_files') as $index => $file) {
+                $type  = $request->input("medias_types.{$index}");
+                $ordre = $request->input("medias_ordres.{$index}", $cours->medias()->count() + $index);
+
+                if (!$file || !$file->isValid()) continue;
+
                 $folder       = 'classe_inclusive/cours/' . $type . 's';
                 $resourceType = $type === 'image' ? 'image' : 'video';
 
-                $result = Cloudinary::upload($item['file']->getRealPath(), [
-                    'folder'        => $folder,
-                    'resource_type' => $resourceType,
-                ]);
+                $result = app(\Cloudinary\Cloudinary::class)->uploadApi()->upload(
+                    $file->getRealPath(),
+                    [
+                        'folder'        => $folder,
+                        'resource_type' => $resourceType,
+                    ]
+                );
 
                 CoursMedias::create([
                     'cours_id'  => $cours->id,
                     'type'      => $type,
-                    'url'       => $result->getSecurePath(),
-                    'public_id' => $result->getPublicId(),
-                    'ordre'     => $ordre,
+                    'url'       => $result['secure_url'],
+                    'public_id' => $result['public_id'],
+                    'ordre'     => $cours->medias()->count() + $index,
                 ]);
             }
         }
@@ -182,7 +163,7 @@ class CoursController extends Controller
             ->firstOrFail();
 
         foreach ($cours->medias as $media) {
-            Cloudinary::destroy($media->public_id);
+            app(\Cloudinary\Cloudinary::class)->uploadApi()->destroy($media->public_id);
         }
 
         $cours->delete();
@@ -196,7 +177,7 @@ class CoursController extends Controller
     public function destroyMedia($mediaId)
     {
         $media = CoursMedias::findOrFail($mediaId);
-        Cloudinary::destroy($media->public_id);
+        app(\Cloudinary\Cloudinary::class)->uploadApi()->destroy($media->public_id);
         $media->delete();
 
         return response()->json([

@@ -19,7 +19,7 @@ class EleveController extends Controller
 {
     public function index()
     {
-     $eleves =  Eleve::with(['classe', 'handicap'])->get();
+        $eleves = Eleve::with(['classe', 'handicap'])->get();
         return response()->json([
             'status' => 'success',
             'message' => 'Liste des élèves',
@@ -114,9 +114,106 @@ class EleveController extends Controller
         ], 400);
     }
 
+    public function edit($id)
+    {
+        $eleve = Eleve::find($id);
+
+        if ($eleve) {
+            return response()->json([
+                "status" => "Success",
+                "message" => "Eleve retrouver",
+                "data" => $eleve,
+            ]);
+        }
+        return response()->json([
+            "status" => "Echec",
+            "message" => "Eleve non retrouver",
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validate = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'prenom' => 'required|string',
+            'numeroParent' => 'required|integer',
+            'handicap_id' => 'required|integer|exists:handicaps,id',
+            'dateOfNaissance' => 'required|String',
+            'classe_id' => 'required|integer|exists:classes,id',
+
+        ]);
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => $validate->errors(),
+            ]);
+        }
+
+        $eleveUpdate = Eleve::where("id", "=", $id)->get()->first();
+
+        if (!$eleveUpdate) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => "Aucune Matiere trouver avec cet id",
+            ], 400);
+        }
+
+        if ($eleveUpdate) {
+            $eleveUpdate->update([
+                'name' => $request->name,
+                'prenom' => $request->prenom,
+                'numeroParent' => $request->numeroParent,
+                'dateOfNaissance' => $request->dateOfNaissance,
+                'handicap_id' => $request->handicap_id,
+                'classe_id' => $request->classe_id,
+            ]);
+
+            return response()->json([
+                "status" => "Success",
+                "message" => " Matiere modifier avec success",
+                "data" => $eleveUpdate,
+            ]);
+        }
+    }
+
+    public function connect()
+    {
+
+        $eleveUpdate =Auth::guard('eleve_api')->user()->makeHidden(['password']);
+
+        if (!$eleveUpdate) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => "Aucun Eleve trouver avec cet id",
+            ], 400);
+        }
+
+        if ($eleveUpdate) {
+            if ($eleveUpdate->is_connect === "false") {
+                $eleveUpdate->update([
+                    'is_connect' => "true",
+                ]);
+                return response()->json([
+                    "status" => "Success",
+                    "message" => " Eleve connecter",
+                    "data" => $eleveUpdate,
+                ]);
+            }
+            $eleveUpdate->update([
+                'is_connect' => "false",
+            ]);
+            return response()->json([
+                "status" => "Success",
+                "message" => " Eleve Deconnecter",
+                "data" => $eleveUpdate,
+            ]);
+        }
+    }
+
+
     public function getEleve()
     {
-        $ecole = Auth::guard('ecole_api')->user()->makeHidden(['password']);
+        $ecole = Auth::guard('eleve_api')->user()->makeHidden(['password']);
         ;
         $ecole->getRoleNames();
 

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->string("question");
             $table->unsignedBigInteger('quiz_id');
             $table->foreign('quiz_id')->references('id')->on('quizzes');
             $table->timestamps();
