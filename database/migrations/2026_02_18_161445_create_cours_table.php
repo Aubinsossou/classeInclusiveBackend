@@ -12,15 +12,18 @@ return new class extends Migration {
     {
         Schema::create('cours', function (Blueprint $table) {
             $table->id();
-            $table->string("titre");
-            $table->string("description");
-            $table->text("contenu");
+            $table->string("title");
+            $table->string("description")->nullable();
+            $table->text("contenu")->nullable();
             $table->unsignedBigInteger('enseignant_id');
-            $table->foreign('enseignant_id')->references('id')->on('enseignants');
+            $table->foreign('enseignant_id')->references('id')->on('enseignants')->constrained('enseignants')
+                ->cascadeOnDelete();
             $table->unsignedBigInteger('classe_id');
             $table->foreign('classe_id')->references('id')->on('classes');
             $table->unsignedBigInteger('matiere_id');
-            $table->foreign('matiere_id')->references('id')->on('matieres');
+            $table->foreign('matiere_id')->references('id')->on('matieres')->constrained('matieres')
+                ->cascadeOnDelete();
+            $table->boolean('is_published')->default(false);
             $table->timestamps();
         });
     }

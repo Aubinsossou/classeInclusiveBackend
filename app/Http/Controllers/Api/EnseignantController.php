@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 
 use App\Models\classe_enseignant;
+use App\Models\Cours;
 use App\Models\Enseignant;
+use App\Models\Quiz;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -127,11 +129,14 @@ class EnseignantController extends Controller
     {
         $enseignant = Auth::guard('enseignant_api')->user()->load([
             'ecole.matieres.cours' => function ($query) {
-                $query->where('enseignant_id', Auth::guard('enseignant_api')->id());
+                $query->where('enseignant_id', Auth::guard('enseignant_api')->id())
+                    ->with(['medias', 'quizzes.questions.reponses']);
             },
-            'ecole.matieres.cours.quizzes.questions.reponses',
-            'classe.eleves'
+            'classe.eleves',
         ]);
+
+        $nombreCours = Cours::where("enseignant_id",$enseignant->id)->get();
+        $nombreQuiz = Quiz::where("enseignant_id",$enseignant->id)->get();
 
         if (!$enseignant) {
             return response()->json([
@@ -154,7 +159,9 @@ class EnseignantController extends Controller
             "status" => "Success",
             "message" => "Enseignant trouvé avec succès",
             "data" => $enseignant,
-            "roles" => $enseignant->getRoleNames()
+            "roles" => $enseignant->getRoleNames(),
+            "nombreCours" => $nombreCours,
+            "nombreQuiz" => $nombreQuiz,
         ]);
     }
 

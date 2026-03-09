@@ -35,6 +35,7 @@ class EleveController extends Controller
             'numeroParent' => 'required|integer',
             'handicap_id' => 'required|integer|exists:handicaps,id',
             'dateOfNaissance' => 'required|String',
+            'is_connect' => 'String',
             'classe_id' => 'required|integer|exists:classes,id',
         ]);
         if ($validate->fails()) {
@@ -52,6 +53,7 @@ class EleveController extends Controller
             'dateOfNaissance' => $request->dateOfNaissance,
             'handicap_id' => $request->handicap_id,
             'classe_id' => $request->classe_id,
+            'is_connect' => $request->is_connect,
             'code' => $code,
         ]);
         $exists = Role::where('name', 'eleve')

@@ -96,7 +96,7 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/handicap")->controller(Ha
     Route::delete("/destroy/{id}", "destroy");
 });
 
-Route::middleware("auth:enseignant_api")->prefix("/v1/cours")->controller(CoursController::class)->group(function () {
+Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant/cours")->controller(CoursController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
@@ -109,7 +109,7 @@ Route::middleware("auth:enseignant_api")->prefix("/v1/quiz")->controller(QuizCon
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
     Route::post("/update/{id}", "update");
-    Route::delete("/destroy/{id}", "destroy");  
+    Route::delete("/destroy/{id}", "destroy");
 });
 
 Route::middleware("auth:enseignant_api")->prefix("/v1/question")->controller(QuestionController::class)->group(function () {
@@ -145,3 +145,10 @@ Route::middleware("auth:eleve_api")->prefix("/v1/eleve")->controller(EleveContro
 });
 
 
+Route::middleware('auth:enseignant_api')->prefix("v1/enseignant/cours")->group(function () {
+    Route::get('/index',          [CoursController::class, 'index']);
+    Route::post('/store',         [CoursController::class, 'store']);
+    Route::get('/show/{id}',      [CoursController::class, 'show']);
+    Route::post('/update/{id}',   [CoursController::class, 'update']);
+    Route::delete('/destroy/{id}',[CoursController::class, 'destroy']);
+});

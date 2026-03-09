@@ -9,7 +9,7 @@ class Handicap extends Model
 {
     protected $guarded = [];
     public function eleves(): HasMany
-{
-    return $this->hasMany(Eleve::class, 'handicap_id');
-}
+    {
+        return $this->hasMany(Eleve::class, 'handicap_id');
+    }
 }

@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Cours extends Model
 {
     protected $guarded = [];
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
+
     public function enseignant(): BelongsTo
     {
         return $this->belongsTo(Enseignant::class);
@@ -24,13 +28,26 @@ class Cours extends Model
         return $this->belongsTo(Matiere::class);
     }
 
-    public function videos(): HasMany
+
+
+    // Médias Cloudinary
+    public function medias(): HasMany
     {
-        return $this->hasMany(VideoCours::class);
+        return $this->hasMany(CoursMedias::class)
+            ->orderBy('ordre');
     }
-    public function quiz()
+
+    // Quiz du cours
+    public function quizzes(): HasMany
     {
         return $this->hasMany(Quiz::class);
+    }
+
+    // Accesseur — média principal (video > image)
+    public function getThumbnailAttribute(): ?string
+    {
+        return $this->medias->firstWhere('type', 'video')?->url
+            ?? $this->medias->firstWhere('type', 'image')?->url;
     }
 
 }

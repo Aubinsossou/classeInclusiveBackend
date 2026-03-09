@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string("prenom");
             $table->integer("code");
             $table->string('dateOfNaissance');
+            $table->string('is_connect')->nullable()->default("false");
             $table->unsignedBigInteger('handicap_id');
             $table->foreign('handicap_id')->references('id')->on('handicaps');
             $table->unsignedBigInteger('classe_id');

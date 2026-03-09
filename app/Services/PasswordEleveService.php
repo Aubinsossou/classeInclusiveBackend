@@ -8,12 +8,12 @@ class PasswordEleveService
 {
     public function generateSecurePassword(int $length = 6): string
     {
+        $numbers = '';
 
-        $numbers = rand(0, 99);
-       ;
+        for ($i = 0; $i < $length; $i++) {
+            $numbers .= rand(0, 9);
+        }
 
-        return str_shuffle(
-            $numbers
-        );
+        return $numbers;
     }
 }
