@@ -88,7 +88,7 @@ Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant")->controller(E
     Route::delete("/logout", "logout");
 });
 
-Route::middleware("auth:ecole_api")->prefix("/v1/ecole/handicap")->controller(HandicapController::class)->group(function () {
+Route::prefix("/v1/ecole/handicap")->controller(HandicapController::class)->group(function () {
     Route::get("/index", "index");
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");

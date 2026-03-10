@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
-            $table->integer("Note");
+            $table->integer("note");
              $table->unsignedBigInteger('eleve_id');
             $table->foreign('eleve_id')->references('id')->on('eleves');
              $table->unsignedBigInteger('quiz_id');

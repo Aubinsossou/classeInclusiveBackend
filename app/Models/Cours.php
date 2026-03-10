@@ -50,4 +50,5 @@ class Cours extends Model
             ?? $this->medias->firstWhere('type', 'image')?->url;
     }
 
+
 }

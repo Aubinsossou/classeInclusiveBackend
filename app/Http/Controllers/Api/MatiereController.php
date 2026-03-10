@@ -11,7 +11,7 @@ class MatiereController extends Controller
 {
     public function index($ecole_id)
     {
-        $matieres = Matiere::where("ecole_id",$ecole_id)->with("ecole")->get();
+        $matieres = Matiere::where("ecole_id",$ecole_id)->with("ecole","cours")->get();
 
         return response()->json([
             "status" => "Success",

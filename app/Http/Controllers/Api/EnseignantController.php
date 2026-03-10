@@ -133,10 +133,11 @@ class EnseignantController extends Controller
                 $query->where('enseignant_id', Auth::guard('enseignant_api')->id())
                     ->with(['medias', 'quizzes.questions.reponses']);
             },
-            'classe.eleves',
+            'classe.eleves.handicap',"classe.eleves.notes"
         ]);
         $nombreCours = Cours::where("enseignant_id", $enseignant->id)->get();
         $nombreQuiz = Quiz::where("enseignant_id", $enseignant->id)->get();
+
         $nombreElevesConnectes = Eleve::where('classe_id', $enseignant->classe_id)
             ->where('is_connect', 'true')
             ->count();

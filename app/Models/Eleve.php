@@ -41,3 +41,5 @@ class Eleve extends Authenticatable
         return $this->hasMany(Note::class);
     }
 }
+
+

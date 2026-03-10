@@ -25,3 +25,4 @@ class Classe extends Model
         return $this->hasOne(Enseignant::class,'classe_id');
     }
 }
+
