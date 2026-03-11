@@ -126,7 +126,11 @@ class EcoleController extends Controller
 
     public function getEcole()
     {
-        $ecole = Auth::guard('ecole_api')->user()->load(['classes.matieres','matieres','eleves.handicap', 'enseignants'])->makeHidden(['password']);
+        $ecole = Auth::guard('ecole_api')->user()->load(['classes.matieres', 'matieres', 'eleves.handicap', 'enseignants'])->loadCount([
+            'eleves as eleves_handicap_count' => function ($query) {
+                $query->whereHas('handicap');
+            }
+        ])->makeHidden(['password']);
         ;
         $ecole->getRoleNames();
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Eleve;
+use App\Models\Enseignant;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -56,13 +57,13 @@ class EleveController extends Controller
             'is_connect' => $request->is_connect,
             'code' => $code,
         ]);
-        $exists = Role::where('name', 'eleve')
-            ->where('guard_name', 'eleve_api')
-            ->exists();
+        // $exists = Role::where('name', 'eleve')
+        //     ->where('guard_name', 'eleve_api')
+        //     ->exists();
 
-        if (!$exists) {
-            Role::create(["name" => "eleve", "guard_name" => "eleve_api"]);
-        }
+        // if (!$exists) {
+        //     Role::create(["name" => "eleve", "guard_name" => "eleve_api"]);
+        // }
 
         $eleve->assignRole("eleve");
 
@@ -75,8 +76,7 @@ class EleveController extends Controller
     public function loginEleve(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'nom' => 'required|string',
-            'prenom' => 'required|string',
+
             'code' => 'required|string',
         ]);
         if ($validate->fails()) {
@@ -90,7 +90,7 @@ class EleveController extends Controller
         $eleve->getRoleNames();
 
 
-        if ($eleve && Hash::check($request->code, $eleve->code)) {
+        if ($eleve && $request->code == $eleve->code) {
             Auth::login($eleve);
             $accessToken = $eleve->createToken('eleveToken')->accessToken;
             $refreshToken = $eleve->createToken('refreshEleveToken')->accessToken;
@@ -179,7 +179,7 @@ class EleveController extends Controller
     public function connect()
     {
 
-        $eleveUpdate =Auth::guard('eleve_api')->user()->makeHidden(['password']);
+        $eleveUpdate = Auth::guard('eleve_api')->user()->makeHidden(['password']);
 
         if (!$eleveUpdate) {
             return response()->json([
@@ -213,7 +213,16 @@ class EleveController extends Controller
 
     public function getEleve()
     {
-        $ecole = Auth::guard('eleve_api')->user()->makeHidden(['password']);
+
+        $ecole = Auth::guard('eleve_api')->user()->load([
+            'classe.enseignant.cours.medias',
+            'classe.enseignant.cours.quizzes' => function ($query) {
+                $query->with([
+                    'questions.reponses',
+                    'notes'
+                ]);
+            }
+        ])->makeHidden(['password']);
         ;
         $ecole->getRoleNames();
 

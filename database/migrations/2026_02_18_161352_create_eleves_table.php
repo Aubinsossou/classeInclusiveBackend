@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->foreign('handicap_id')->references('id')->on('handicaps')->cascadeOnDelete();
             $table->unsignedBigInteger('classe_id');
             $table->foreign('classe_id')->references('id')->on('classes')->cascadeOnDelete();
-            $table->unsignedBigInteger("numeroParent");
+            $table->string("numeroParent");
             $table->timestamps();
         });
     }
