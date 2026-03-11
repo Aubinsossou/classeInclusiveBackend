@@ -6,14 +6,17 @@ use Illuminate\Support\Str;
 
 class PasswordEleveService
 {
-    public function generateSecurePassword(int $length = 6): string
-    {
+   public function generateSecurePassword(int $length = 6): string
+{
+    do {
         $numbers = '';
 
         for ($i = 0; $i < $length; $i++) {
-            $numbers .= rand(0, 9);
+            $numbers .= random_int(0, 9);
         }
 
-        return $numbers;
-    }
+    } while (\App\Models\Eleve::where('code', $numbers)->exists());
+
+    return $numbers;
+}
 }

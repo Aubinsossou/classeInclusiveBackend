@@ -11,7 +11,9 @@ use App\Http\Controllers\Api\MatiereController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\ReponseController;
+use App\Http\Controllers\ClasseMatiereController;
 use App\Http\Controllers\NoteController;
+use App\Models\ClasseMatiere;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +58,10 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/matiere")->controller(Mat
     Route::post("/update/{id}", "update");
     Route::delete("/destroy/{id}", "destroy");
 });
+Route::middleware("auth:ecole_api")->prefix("/v1/ecole/classe/assigneMatiere")->controller(ClasseMatiereController::class)->group(function () {
+    Route::post("/store", "store");
+});
+
 
 Route::middleware("auth:ecole_api")->prefix("/v1/ecole/eleve")->controller(EleveController::class)->group(function () {
     Route::get("/index", "index");

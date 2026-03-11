@@ -12,13 +12,12 @@ return new class extends Migration {
     {
         Schema::create('cours_medias', function (Blueprint $table) {
             $table->id();
-
+            $table->string('path')->nullable();
             $table->unsignedBigInteger('cours_id');
             $table->foreign('cours_id')->references('id')->on('cours')->constrained('cours')
                 ->cascadeOnDelete();
             $table->enum('type', ['video', 'image', 'audio']);
             $table->string('url', 700);
-            $table->string('public_id', 255);
             $table->unsignedInteger('ordre')->default(0);
             $table->timestamps();
         });

@@ -22,7 +22,20 @@ class Classe extends Model
     }
     public function enseignant(): HasOne
     {
-        return $this->hasOne(Enseignant::class,'classe_id');
+        return $this->hasOne(Enseignant::class, 'classe_id');
+    }
+    public function matieres()
+    {
+        return $this->belongsToMany(Matiere::class, 'classe_matieres')
+            ->withPivot('ecole_id')
+            ->withTimestamps();
+    }
+
+    public function ecoles()
+    {
+        return $this->belongsToMany(Ecole::class, 'classe_matieres')
+            ->withPivot('matiere_id')
+            ->withTimestamps();
     }
 }
 

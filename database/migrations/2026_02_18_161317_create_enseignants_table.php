@@ -17,9 +17,9 @@ return new class extends Migration {
             $table->string( "matricule");
             $table->unsignedBigInteger( "numero")->nullable();
             $table->unsignedBigInteger('classe_id')->nullable();
-            $table->foreign('classe_id')->references('id')->on('classes');
+            $table->foreign('classe_id')->references('id')->on('classes')->cascadeOnDelete();
             $table->unsignedBigInteger('ecole_id');
-            $table->foreign('ecole_id')->references('id')->on('ecoles');
+            $table->foreign('ecole_id')->references('id')->on('ecoles')->cascadeOnDelete();;
             $table->string( "password");
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();

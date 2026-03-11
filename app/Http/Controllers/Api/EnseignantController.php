@@ -129,7 +129,7 @@ class EnseignantController extends Controller
     public function getEnseignant()
     {
         $enseignant = Auth::guard('enseignant_api')->user()->load([
-            'ecole.matieres.cours' => function ($query) {
+            'classe.matieres.cours' => function ($query) {
                 $query->where('enseignant_id', Auth::guard('enseignant_api')->id())
                     ->with(['medias', 'quizzes.questions.reponses']);
             },

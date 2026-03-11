@@ -18,9 +18,9 @@ return new class extends Migration {
             $table->string('dateOfNaissance');
             $table->string('is_connect')->nullable()->default("false");
             $table->unsignedBigInteger('handicap_id');
-            $table->foreign('handicap_id')->references('id')->on('handicaps');
+            $table->foreign('handicap_id')->references('id')->on('handicaps')->cascadeOnDelete();
             $table->unsignedBigInteger('classe_id');
-            $table->foreign('classe_id')->references('id')->on('classes');
+            $table->foreign('classe_id')->references('id')->on('classes')->cascadeOnDelete();
             $table->unsignedBigInteger("numeroParent");
             $table->timestamps();
         });

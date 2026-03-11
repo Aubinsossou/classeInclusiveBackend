@@ -11,6 +11,7 @@ class Cours extends Model
     protected $guarded = [];
     protected $casts = [
         'is_published' => 'boolean',
+        'date_programmation' => 'datetime',
     ];
 
     public function enseignant(): BelongsTo
