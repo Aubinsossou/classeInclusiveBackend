@@ -57,13 +57,13 @@ class EleveController extends Controller
             'is_connect' => $request->is_connect,
             'code' => $code,
         ]);
-        // $exists = Role::where('name', 'eleve')
-        //     ->where('guard_name', 'eleve_api')
-        //     ->exists();
+        $exists = Role::where('name', 'eleve')
+            ->where('guard_name', 'eleve_api')
+            ->exists();
 
-        // if (!$exists) {
-        //     Role::create(["name" => "eleve", "guard_name" => "eleve_api"]);
-        // }
+        if (!$exists) {
+            Role::create(["name" => "eleve", "guard_name" => "eleve_api"]);
+        }
 
         $eleve->assignRole("eleve");
 
@@ -213,7 +213,8 @@ class EleveController extends Controller
 
     public function getEleve()
     {
-        $eleve = Auth::guard('eleve_api')->user()->load([
+
+         $eleve = Auth::guard('eleve_api')->user()->load([
             'handicap',
             'classe.enseignant.cours.matiere',
             'classe.enseignant.cours.medias',

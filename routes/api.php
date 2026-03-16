@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ClasseController;
 use App\Http\Controllers\Api\ClasseEnseignantController;
 use App\Http\Controllers\Api\CoursController;
+use App\Http\Controllers\Api\CoursMediasController;
 use App\Http\Controllers\Api\EcoleController;
 use App\Http\Controllers\Api\EleveController;
 use App\Http\Controllers\Api\EnseignantController;
@@ -158,4 +159,12 @@ Route::middleware('auth:enseignant_api')->prefix("v1/enseignant/cours")->group(f
     Route::get('/show/{id}',      [CoursController::class, 'show']);
     Route::post('/update/{id}',   [CoursController::class, 'update']);
     Route::delete('/destroy/{id}',[CoursController::class, 'destroy']);
+});
+
+Route::middleware('auth:enseignant_api')->prefix("v1/enseignant/cours/media")->controller(CoursMediasController::class)->group(function () {
+    Route::get('/index',           'index');
+    Route::post('/store',          'store');
+    Route::get('/show/{id}',       'show');
+    Route::post('/update/{id}',    'update');
+    Route::delete('/destroy/{id}', 'destroy');
 });
