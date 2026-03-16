@@ -44,7 +44,7 @@ class CoursController extends Controller
             'classe_id' => 'required|exists:classes,id',
             'is_published' => 'nullable',
             'date_programmation' => 'nullable|date',
-            'medias_files.*' => 'nullable|file|max:102400',
+            'medias_files.*' => 'nullable|mimes:jpg,jpeg,png,gif,webp,mp4,mov,avi,webm,mkv,mp3,wav,ogg,m4a,aac,flac|max:102400',
             'medias_types.*' => 'nullable|string|in:image,video,audio',
             'medias_ordres.*' => 'nullable|integer',
         ]);
@@ -105,7 +105,7 @@ class CoursController extends Controller
             'classe_id' => 'required|exists:classes,id',
             'is_published' => 'nullable',
             'date_programmation' => 'nullable|date',
-            'medias_files.*' => 'nullable|file|max:102400',
+            'medias_files.*' => 'nullable|mimes:jpg,jpeg,png,gif,webp,mp4,mov,avi,webm,mkv,mp3,wav,ogg,m4a,aac,flac|max:102400',
             'medias_types.*' => 'nullable|string|in:image,video,audio',
             'medias_ordres.*' => 'nullable|integer',
         ]);

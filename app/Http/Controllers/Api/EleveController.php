@@ -213,8 +213,9 @@ class EleveController extends Controller
 
     public function getEleve()
     {
-
-        $ecole = Auth::guard('eleve_api')->user()->load([
+        $eleve = Auth::guard('eleve_api')->user()->load([
+            'handicap',
+            'classe.enseignant.cours.matiere',
             'classe.enseignant.cours.medias',
             'classe.enseignant.cours.quizzes' => function ($query) {
                 $query->with([
@@ -223,19 +224,19 @@ class EleveController extends Controller
                 ]);
             }
         ])->makeHidden(['password']);
-        ;
-        $ecole->getRoleNames();
 
-        if ($ecole) {
+        $eleve->getRoleNames();
+
+        if ($eleve) {
             return response()->json([
-                "status" => "Success",
-                "message" => " ecole trouver avec success",
-                "data" => $ecole,
+                "status"  => "Success",
+                "message" => "Eleve trouvé avec succès",
+                "data"    => $eleve,
             ]);
         }
         return response()->json([
-            "status" => "Echec",
-            "message" => "Aucune ecole n'a ete trouver",
+            "status"  => "Echec",
+            "message" => "Aucun élève trouvé",
         ]);
     }
 
