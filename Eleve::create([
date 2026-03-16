@@ -1,0 +1,26 @@
+[90m= [39m[34;4mApp\Models\Eleve[39;24m {#6331
+    [34mname[39m: "[32mSARA[39m",
+    [34mprenom[39m: "[32mSara[39m",
+    [34mdateOfNaissance[39m: "[32m2012-03-15[39m",
+    [34mnumeroParent[39m: "[32m0123456789[39m",
+    [34mclasse_id[39m: [35m1[39m,
+    [34mhandicap_id[39m: [35m3[39m,
+    [34mcode[39m: "[32m2222[39m",
+    #[33mupdated_at[39m: "[32m2026-03-14 17:13:53[39m",
+    [34mcreated_at[39m: "[32m2026-03-14 17:13:53[39m",
+    [34mid[39m: [35m2[39m,
+  }
+
+[90m= [39m[34;4mApp\Models\Eleve[39;24m {#6331
+    [34mname[39m: "[32mSARA[39m",
+    [34mprenom[39m: "[32mSara[39m",
+    [34mdateOfNaissance[39m: "[32m2012-03-15[39m",
+    [34mnumeroParent[39m: "[32m0123456789[39m",
+    [34mclasse_id[39m: [35m1[39m,
+    [34mhandicap_id[39m: [35m3[39m,
+    [34mcode[39m: "[32m2222[39m",
+    #[33mupdated_at[39m: "[32m2026-03-14 17:13:53[39m",
+    [34mcreated_at[39m: "[32m2026-03-14 17:13:53[39m",
+    [34mid[39m: [35m2[39m,
+  }
+
