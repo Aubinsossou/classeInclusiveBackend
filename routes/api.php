@@ -149,7 +149,7 @@ Route::middleware("auth:eleve_api")->prefix("/v1/eleve")->controller(EleveContro
 
     Route::get("/getEleve", "getEleve");
     Route::post("/connexion/{id}", "connect");
-    Route::delete("/logout", "logout");
+    Route::post("/logout", "logout");
 });
 
 

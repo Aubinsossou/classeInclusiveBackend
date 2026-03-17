@@ -42,7 +42,7 @@ class Enseignant extends Authenticatable
     {
         return $this->hasMany(Cours::class);
     }
-    
+
     public function quizzes(): HasMany
     {
         return $this->hasMany(Quiz::class, 'enseignant_id');

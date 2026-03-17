@@ -87,7 +87,7 @@ class EleveController extends Controller
         }
 
         $eleve = Eleve::where('code', $request->code)->get()->first();
-        $eleve->getRoleNames();
+       // $eleve->getRoleNames();
 
 
         if ($eleve && $request->code == $eleve->code) {
@@ -106,11 +106,11 @@ class EleveController extends Controller
         }
         if (!$eleve) {
             return response()->json([
-                'message' => 'Aucun eleve trouver avec ce mail',
+                'message' => 'Aucun eleve trouver avec ce code',
             ], 400);
         }
         return response()->json([
-            'message' => 'Nom ou mot de passe incorrect',
+            'message' => 'code incorrect',
         ], 400);
     }
 
