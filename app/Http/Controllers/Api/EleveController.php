@@ -33,7 +33,7 @@ class EleveController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string',
             'prenom' => 'required|string',
-            'numeroParent' => 'required|integer',
+            'numeroParent' => 'required|string',
             'handicap_id' => 'required|integer|exists:handicaps,id',
             'dateOfNaissance' => 'required|String',
             'is_connect' => 'String',
@@ -136,7 +136,7 @@ class EleveController extends Controller
         $validate = Validator::make($request->all(), [
             'name' => 'required|string',
             'prenom' => 'required|string',
-            'numeroParent' => 'required|integer',
+            'numeroParent' => 'required|string',
             'handicap_id' => 'required|integer|exists:handicaps,id',
             'dateOfNaissance' => 'required|String',
             'classe_id' => 'required|integer|exists:classes,id',
