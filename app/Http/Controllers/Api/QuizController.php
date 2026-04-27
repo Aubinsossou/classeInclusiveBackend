@@ -35,7 +35,7 @@ class QuizController extends Controller
             ], 400);
         }
 
-        Quiz::create([
+       $question = Quiz::create([
             'name' => $request->name,
             'cours_id' => $request->cours_id,
             'enseignant_id' => $request->enseignant_id,
@@ -43,8 +43,8 @@ class QuizController extends Controller
 
         return response()->json([
             "status" => "Success",
-            "message" => "Réponses créées avec succès",
-            "data" => $request->listReponse,
+            "message" => "Question créées avec succès",
+            "data" => $question,
         ]);
     }
     public function edit($id)

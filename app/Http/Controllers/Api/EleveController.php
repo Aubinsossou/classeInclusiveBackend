@@ -38,6 +38,7 @@ class EleveController extends Controller
             'dateOfNaissance' => 'required|String',
             'is_connect' => 'String',
             'classe_id' => 'required|integer|exists:classes,id',
+            'code' => 'required|string|max:6',
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -45,7 +46,6 @@ class EleveController extends Controller
                 'message' => 'Validation échoué',
             ], 400);
         }
-        $code = $passwordService->generateSecurePassword();
 
         $eleve = Eleve::create([
             'name' => $request->name,
@@ -55,7 +55,7 @@ class EleveController extends Controller
             'handicap_id' => $request->handicap_id,
             'classe_id' => $request->classe_id,
             'is_connect' => $request->is_connect,
-            'code' => $code,
+            'code' => $request->code,
         ]);
         $exists = Role::where('name', 'eleve')
             ->where('guard_name', 'eleve_api')
@@ -87,7 +87,7 @@ class EleveController extends Controller
         }
 
         $eleve = Eleve::where('code', $request->code)->get()->first();
-       // $eleve->getRoleNames();
+        // $eleve->getRoleNames();
 
 
         if ($eleve && $request->code == $eleve->code) {
@@ -113,6 +113,7 @@ class EleveController extends Controller
             'message' => 'code incorrect',
         ], 400);
     }
+
 
     public function edit($id)
     {
@@ -179,45 +180,38 @@ class EleveController extends Controller
     public function connect()
     {
 
-        $eleveUpdate = Auth::guard('eleve_api')->user()->makeHidden(['password']);
+        $eleveConnect = Auth::guard('eleve_api')->user();
 
-        if (!$eleveUpdate) {
+        if (!$eleveConnect) {
             return response()->json([
                 "status" => "Echoué",
                 "message" => "Aucun Eleve trouver avec cet id",
             ], 400);
         }
 
-        if ($eleveUpdate) {
-            if ($eleveUpdate->is_connect === "false") {
-                $eleveUpdate->update([
-                    'is_connect' => "true",
-                ]);
-                return response()->json([
-                    "status" => "Success",
-                    "message" => " Eleve connecter",
-                    "data" => $eleveUpdate,
-                ]);
-            }
-            $eleveUpdate->update([
-                'is_connect' => "false",
-            ]);
-            return response()->json([
-                "status" => "Success",
-                "message" => " Eleve Deconnecter",
-                "data" => $eleveUpdate,
-            ]);
-        }
+
+        $eleveConnect->update([
+            'is_connect' => !$eleveConnect->is_connect
+        ]);
+
+        return response()->json([
+            "status" => "Success",
+            "message" => " Eleve Deconnecter",
+            "data" => $eleveConnect,
+        ]);
+
     }
 
 
     public function getEleve()
     {
 
-         $eleve = Auth::guard('eleve_api')->user()->load([
+        $eleve = Auth::guard('eleve_api')->user()->load([
             'handicap',
             'classe.enseignant.cours.matiere',
             'classe.enseignant.cours.medias',
+            'classe.enseignant.cours.materiels',
+            'classe.enseignant.cours.strategies',
             'classe.enseignant.cours.quizzes' => function ($query) {
                 $query->with([
                     'questions.reponses',
@@ -230,13 +224,13 @@ class EleveController extends Controller
 
         if ($eleve) {
             return response()->json([
-                "status"  => "Success",
+                "status" => "Success",
                 "message" => "Eleve trouvé avec succès",
-                "data"    => $eleve,
+                "data" => $eleve,
             ]);
         }
         return response()->json([
-            "status"  => "Echec",
+            "status" => "Echec",
             "message" => "Aucun élève trouvé",
         ]);
     }

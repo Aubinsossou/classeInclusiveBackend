@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string("title");
             $table->string("description")->nullable();
             $table->text("contenu")->nullable();
+            $table->text("resume")->nullable();
             $table->timestamp('date_programmation')->nullable();
             $table->unsignedBigInteger('enseignant_id');
             $table->foreign('enseignant_id')->references('id')->on('enseignants')
@@ -27,6 +28,7 @@ return new class extends Migration {
             $table->foreign('matiere_id')->references('id')->on('matieres')
                 ->cascadeOnDelete();
             $table->boolean('is_published')->default(false);
+            $table->boolean('quiz_authorise')->default(false);
             $table->timestamps();
         });
     }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\MatiereController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\ReponseController;
+use App\Http\Controllers\Api\RetourProjectionController;
 use App\Http\Controllers\ClasseMatiereController;
 use App\Http\Controllers\NoteController;
 use App\Models\ClasseMatiere;
@@ -89,7 +90,6 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/enseignant/enseignantClas
 });
 
 Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant")->controller(EnseignantController::class)->group(function () {
-
     Route::get("/update/{id}", "update");
     Route::get("/getEnseignant", "getEnseignant");
     Route::delete("/logout", "logout");
@@ -139,32 +139,38 @@ Route::middleware("auth:enseignant_api")->prefix("/v1/reponse")->controller(Repo
 Route::middleware(['auth:enseignant_api'])->group(function () {
     Route::get("/indexNote", [NoteController::class, 'index']);
     Route::get("/indexEleve", [EleveController::class, 'index']);
+    Route::get("/v1/retour-projection/index/{enseignant_id}", [RetourProjectionController::class, "index"]);
+
 });
 
-Route::middleware("auth:eleve_api")->prefix("/v1/note")->controller(NoteController::class)->group(function () {
+Route::middleware("auth:eleve_api")->prefix("/v1/eleve/note")->controller(NoteController::class)->group(function () {
     Route::post("/store", "store");
 });
 
 Route::middleware("auth:eleve_api")->prefix("/v1/eleve")->controller(EleveController::class)->group(function () {
 
     Route::get("/getEleve", "getEleve");
-    Route::post("/connexion/{id}", "connect");
+    Route::get("/connexion", "connect");
     Route::post("/logout", "logout");
 });
+Route::middleware("auth:eleve_api")->prefix("v1/eleve")->group(function(){
+    Route::post("/retour-projection/store", [RetourProjectionController::class, "store"]);
 
+});
 
 Route::middleware('auth:enseignant_api')->prefix("v1/enseignant/cours")->group(function () {
-    Route::get('/index',          [CoursController::class, 'index']);
-    Route::post('/store',         [CoursController::class, 'store']);
-    Route::get('/show/{id}',      [CoursController::class, 'show']);
-    Route::post('/update/{id}',   [CoursController::class, 'update']);
-    Route::delete('/destroy/{id}',[CoursController::class, 'destroy']);
+    Route::post("/authorise_quiz", [CoursController::class, "authorise_quiz"]);
+    Route::get('/index', [CoursController::class, 'index']);
+    Route::post('/store', [CoursController::class, 'store']);
+    Route::get('/show/{id}', [CoursController::class, 'show']);
+    Route::post('/update/{id}', [CoursController::class, 'update']);
+    Route::delete('/destroy/{id}', [CoursController::class, 'destroy']);
 });
 
 Route::middleware('auth:enseignant_api')->prefix("v1/enseignant/cours/media")->controller(CoursMediasController::class)->group(function () {
-    Route::get('/index',           'index');
-    Route::post('/store',          'store');
-    Route::get('/show/{id}',       'show');
-    Route::post('/update/{id}',    'update');
+    Route::get('/index', 'index');
+    Route::post('/store', 'store');
+    Route::get('/show/{id}', 'show');
+    Route::post('/update/{id}', 'update');
     Route::delete('/destroy/{id}', 'destroy');
 });

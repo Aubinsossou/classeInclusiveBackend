@@ -7,4 +7,4 @@
 
 
 <p>Merci,<br>
-Equipe Classe Inclusion</p>
+Equipe Ecole229</p>

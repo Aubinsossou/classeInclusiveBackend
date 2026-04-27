@@ -12,13 +12,15 @@ class ClasseController extends Controller
 
     public function index($ecole_id)
     {
-        $classes = Classe::where("ecole_id",$ecole_id)->with("eleves","enseignant",'matieres')->get();
-
-            return response()->json([
-                "status" => "Success",
-                "message" => "listes des classes trouver",
-                "data" => $classes,
-            ]);
+        $classes = Classe::where("ecole_id", $ecole_id)
+            ->doesntHave('enseignant')
+            ->with("eleves", "enseignant", "matieres")
+            ->get();
+        return response()->json([
+            "status" => "Success",
+            "message" => "listes des classes trouver",
+            "data" => $classes,
+        ]);
 
     }
 

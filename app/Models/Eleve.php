@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -19,6 +20,10 @@ class Eleve extends Authenticatable
 
     protected $guard_name = 'eleve_api';
 
+ protected $casts = [
+        'is_connect' => 'boolean',
+
+    ];
     protected $guarded = [
 
     ];
@@ -39,6 +44,11 @@ class Eleve extends Authenticatable
     public function notes(): HasMany
     {
         return $this->hasMany(Note::class);
+    }
+     public function retourProjection(): HasOne
+    {
+        return $this->hasOne(RetourProjection::class,'eleve_id');
+
     }
 }
 

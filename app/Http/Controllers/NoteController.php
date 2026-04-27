@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class NoteController extends Controller
 {
@@ -22,9 +22,9 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            "note" => 'required|number',
-            "eleve_id" => 'required|integer|exists:eleves',
-            "quiz_id" => 'required|integerexists:quizzes',
+            "note" => 'required|integer',
+            "eleve_id" => 'required|integer|exists:eleves,id',
+            "quiz_id" => 'required|integer|exists:quizzes,id',
         ]);
 
         if ($validate->fails()) {

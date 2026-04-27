@@ -11,6 +11,7 @@ class Cours extends Model
     protected $guarded = [];
     protected $casts = [
         'is_published' => 'boolean',
+        'quiz_authorise' => 'boolean',
         'date_programmation' => 'datetime',
     ];
 
@@ -50,6 +51,18 @@ class Cours extends Model
         return $this->medias->firstWhere('type', 'video')?->url
             ?? $this->medias->firstWhere('type', 'image')?->url;
     }
+    public function materiels(): HasMany
+    {
+        return $this->hasMany(Materiels::class);
+    }
+    public function strategies(): HasMany
+    {
+        return $this->hasMany(Strategies::class);
+    }
 
+      public function retoursProjections(): HasMany
+    {
+        return $this->hasMany(RetourProjection::class);
+    }
 
 }
