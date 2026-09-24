@@ -56,6 +56,10 @@ return [
             'driver' => 'passport',
             'provider' => 'eleves',
         ],
+        'client_api' => [
+            'driver' => 'passport',
+            'provider' => 'clients',
+        ],
     ],
 
     /*
@@ -99,6 +103,11 @@ return [
         'enseignants' => [
             'driver' => 'eloquent',
             'model' => App\Models\Enseignant::class,
+        ],
+
+        'clients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Client::class,
         ],
     ],
 

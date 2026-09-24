@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // L'espace Client est une SPA sans route web nommee "login" :
+        // les requetes API sans header JSON doivent rester en 401 JSON
+        // (inchange), et ne jamais planter sur route('login') inexistante.
+        $middleware->redirectGuestsTo(fn () => url('/'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\ClasseController;
 use App\Http\Controllers\Api\ClasseEnseignantController;
+use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\ClientStatisticController;
 use App\Http\Controllers\Api\CoursController;
 use App\Http\Controllers\Api\CoursMediasController;
 use App\Http\Controllers\Api\EcoleController;
@@ -33,6 +35,33 @@ Route::prefix('/v1/enseignant')->group(function () {
     Route::post('/register', [EnseignantController::class, 'registerEnseignant']);
 });
 
+
+Route::prefix('/v1/client')->group(function () {
+    Route::post('/login', [ClientController::class, 'loginClient']);
+    Route::post('/register', [ClientController::class, 'registerClient']);
+});
+
+Route::middleware('auth:client_api')->prefix('/v1/client')->controller(ClientController::class)->group(function () {
+    Route::get('/getClient', 'getClient');
+    Route::get('/ecoles', 'ecoles');
+    Route::get('/classes', 'classes');
+    Route::get('/matieres', 'matieres');
+    Route::get('/enseignants', 'enseignants');
+    Route::get('/cours', 'cours');
+    Route::get('/quizzes', 'quizzes');
+    Route::get('/handicaps', 'handicaps');
+    Route::get('/eleves', [ClientStatisticController::class, 'listeEleves']);
+    Route::get('/statistics/schema', [ClientStatisticController::class, 'schema']);
+    Route::get('/statistics/overview', [ClientStatisticController::class, 'overview']);
+    Route::get('/statistics/eleves', [ClientStatisticController::class, 'eleves']);
+    Route::get('/statistics/enseignants', [ClientStatisticController::class, 'enseignants']);
+    Route::get('/statistics/cours', [ClientStatisticController::class, 'cours']);
+    Route::get('/statistics/quiz', [ClientStatisticController::class, 'quiz']);
+    Route::get('/statistics/handicaps', [ClientStatisticController::class, 'handicaps']);
+    Route::get('/statistics/matieres', [ClientStatisticController::class, 'matieres']);
+    Route::get('/statistics/etablissements/{id}', [ClientStatisticController::class, 'etablissement']);
+    Route::delete('/logout', 'logout');
+});
 
 Route::prefix('/v1/ecole')->group(function () {
     Route::post('/login', [EcoleController::class, 'loginEcole']);
