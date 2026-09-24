@@ -291,6 +291,7 @@ class ClientStatisticController extends Controller
     public function enseignants(Request $request)
     {
         $f = $this->filters($request);
+        $t = $this->buildTotaux($f);
         $scope = Enseignant::when($f['ecole_id'], fn ($q) => $q->where('ecole_id', $f['ecole_id']))
             ->when($f['classe_id'], fn ($q) => $q->where('classe_id', $f['classe_id']));
         $total = (clone $scope)->count();
@@ -302,6 +303,8 @@ class ClientStatisticController extends Controller
             'total_enseignants' => $total, 'avec_classe' => $avec, 'sans_classe' => $sans,
             'avec_classe_pourcentage' => $this->pct($avec, $total),
             'sans_classe_pourcentage' => $this->pct($sans, $total),
+            'cours_moyen_par_enseignant' => $total > 0 ? round($t['total_cours'] / $total, 2) : 0,
+            'quiz_moyen_par_enseignant' => $total > 0 ? round($t['total_quiz'] / $total, 2) : 0,
             'par_etablissement' => $parEcole,
         ], $f);
     }
@@ -313,6 +316,7 @@ class ClientStatisticController extends Controller
         $base = $this->coursQuery($f, $t['classeIds'], $t['enseignantIds']);
         $total = (clone $base)->count();
         $publies = (clone $base)->where('is_published', true)->count();
+        $quizAuthorise = (clone $base)->where('quiz_authorise', true)->count();
         $parMatiere = Matiere::when($f['ecole_id'], fn ($q) => $q->where('ecole_id', $f['ecole_id']))
             ->when($f['matiere_id'], fn ($q) => $q->where('id', $f['matiere_id']))->get()
             ->map(function ($m) use ($base, $total) {
@@ -321,7 +325,9 @@ class ClientStatisticController extends Controller
             })->all();
         return $this->ok('Statistiques des cours.', [
             'total_cours' => $total, 'publies' => $publies, 'non_publies' => $total - $publies,
-            'publies_pourcentage' => $this->pct($publies, $total), 'par_matiere' => $parMatiere,
+            'publies_pourcentage' => $this->pct($publies, $total),
+            'quiz_authorise' => $quizAuthorise, 'quiz_authorise_pourcentage' => $this->pct($quizAuthorise, $total),
+            'par_matiere' => $parMatiere,
         ], $f);
     }
 
