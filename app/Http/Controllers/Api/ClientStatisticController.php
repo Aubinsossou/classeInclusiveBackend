@@ -206,18 +206,6 @@ class ClientStatisticController extends Controller
             'total_notes' => $totalNotes,
             'total_handicaps' => Handicap::when($f['handicap_id'], fn ($q) => $q->where('id', $f['handicap_id']))->count(),
             'total_medias' => $totalMedias,
-            'repartition_sexe' => [
-                'disponible' => false,
-                'raison' => "Aucune colonne sexe/genre dans eleves et enseignants.",
-                'donnees_manquantes' => ['eleves.sexe', 'enseignants.sexe'],
-                'masculin' => null, 'feminin' => null,
-                'masculin_pourcentage' => null, 'feminin_pourcentage' => null,
-            ],
-            'repartition_niveau' => [
-                'disponible' => false,
-                'raison' => "Aucune colonne niveau/cycle dans classes (seul champ : name).",
-                'donnees_manquantes' => ['classes.niveau'],
-            ],
             'repartition_par_classe' => $this->repClasse($f, $totalEleves),
             'repartition_par_etablissement' => $this->repEcole($f),
             'repartition_par_handicap' => $this->repHandicap($f, $t['classeIds'], $totalEleves),
@@ -281,7 +269,6 @@ class ClientStatisticController extends Controller
             ->when($f['handicap_id'], fn ($q) => $q->where('handicap_id', $f['handicap_id']))->count();
         return $this->ok('Statistiques des eleves.', [
             'total_eleves' => $total,
-            'repartition_sexe' => ['disponible' => false, 'raison' => "Colonne sexe absente de eleves.", 'donnees_manquantes' => ['eleves.sexe']],
             'repartition_par_classe' => $this->repClasse($f, $total),
             'repartition_par_etablissement' => $this->repEcole($f),
             'repartition_par_handicap' => $this->repHandicap($f, $cIds, $total),

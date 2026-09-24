@@ -52,7 +52,9 @@ class ClientStatisticTest extends TestCase
                 'total_questions', 'total_reponses', 'total_notes', 'total_handicaps', 'total_medias',
                 'repartition_par_classe', 'repartition_par_etablissement', 'repartition_par_handicap',
                 'enseignants', 'cours', 'quiz',
-            ]]);
+            ]])
+            ->assertJsonMissingPath('data.repartition_sexe')
+            ->assertJsonMissingPath('data.repartition_niveau');
     }
 
     public function test_cours_expose_quiz_authorise(): void
@@ -149,5 +151,28 @@ class ClientStatisticTest extends TestCase
             ->assertJsonPath('data.avec_classe', 1)
             ->assertJsonPath('data.cours_moyen_par_enseignant', 2)
             ->assertJsonPath('data.quiz_moyen_par_enseignant', 0);
+    }
+
+    public function test_statistiques_eleves_n_exposent_plus_sexe_ni_niveau(): void
+    {
+        Passport::actingAs($this->client(), [], 'client_api');
+
+        $this->getJson('/api/v1/client/statistics/eleves')
+            ->assertOk()
+            ->assertJsonStructure(['data' => [
+                'total_eleves', 'repartition_par_classe', 'repartition_par_etablissement', 'repartition_par_handicap',
+            ]])
+            ->assertJsonMissingPath('data.repartition_sexe')
+            ->assertJsonMissingPath('data.repartition_niveau');
+    }
+
+    public function test_schema_conserve_la_detection_des_indicateurs_absents(): void
+    {
+        Passport::actingAs($this->client(), [], 'client_api');
+
+        $this->getJson('/api/v1/client/statistics/schema')
+            ->assertOk()
+            ->assertJsonPath('data.indisponibles.0.indicateur', 'repartition_sexe')
+            ->assertJsonPath('data.indisponibles.1.indicateur', 'repartition_niveau');
     }
 }
