@@ -124,8 +124,14 @@ Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant")->controller(E
     Route::delete("/logout", "logout");
 });
 
-Route::prefix("/v1/ecole/handicap")->controller(HandicapController::class)->group(function () {
+// ── Handicaps ────────────────────────────────────────────────────────────────
+// Lecture : accessible à l'école ET à l'enseignant (référentiel partagé).
+// Écriture : réservée au portail école (le groupe était SANS middleware → accès anonyme, corrigé).
+Route::middleware("auth:ecole_api,enseignant_api")->prefix("/v1/ecole/handicap")->controller(HandicapController::class)->group(function () {
     Route::get("/index", "index");
+});
+
+Route::middleware("auth:ecole_api")->prefix("/v1/ecole/handicap")->controller(HandicapController::class)->group(function () {
     Route::post("/store", "store");
     Route::get("/edit/{id}", "edit");
     Route::post("/update/{id}", "update");
