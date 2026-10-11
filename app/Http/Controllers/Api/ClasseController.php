@@ -12,8 +12,10 @@ class ClasseController extends Controller
 
     public function index($ecole_id)
     {
+
+
         $classes = Classe::where("ecole_id", $ecole_id)
-            ->doesntHave('enseignant')
+        //    ->doesntHave('enseignant')
             ->with("eleves", "enseignant", "matieres")
             ->get();
         return response()->json([
