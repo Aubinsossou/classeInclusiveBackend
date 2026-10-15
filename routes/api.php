@@ -121,7 +121,14 @@ Route::middleware("auth:ecole_api")->prefix("/v1/ecole/enseignant/enseignantClas
 Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant")->controller(EnseignantController::class)->group(function () {
     Route::get("/update/{id}", "update");
     Route::get("/getEnseignant", "getEnseignant");
+    Route::post("/change-password", "changePassword");
     Route::delete("/logout", "logout");
+});
+
+// L'enseignant gère les élèves de SA classe : ajout et retrait (suppression définitive).
+Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant/classe/eleve")->controller(EleveController::class)->group(function () {
+    Route::post("/store", "storeForEnseignant");
+    Route::delete("/destroy/{id}", "destroyForEnseignant");
 });
 
 // ── Handicaps ────────────────────────────────────────────────────────────────

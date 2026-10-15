@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Eleve;
 use App\Models\Enseignant;
+use App\Models\eleveHandicap;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -243,6 +244,138 @@ class EleveController extends Controller
         return response()->json([
             "status" => "Success",
             "message" => "Logout is success"
+        ]);
+    }
+
+    /**
+     * Ajout d'un élève par l'enseignant, dans SA classe.
+     * La classe de rattachement est toujours déduite du compte enseignant
+     * authentifié (enseignants.classe_id) : un éventuel classe_id envoyé
+     * dans la requête est volontairement ignoré.
+     */
+    public function storeForEnseignant(Request $request)
+    {
+        $enseignant = Auth::guard('enseignant_api')->user();
+
+        if (!$enseignant) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Aucun enseignant authentifié",
+            ], 401);
+        }
+
+        if (!$enseignant->classe_id) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Aucune classe n'est assignée à cet enseignant",
+            ], 400);
+        }
+
+        $validate = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'prenom' => 'required|string',
+            'numeroParent' => 'required|string',
+            'handicap_id' => 'required|integer|exists:handicaps,id',
+            'dateOfNaissance' => 'required|string',
+            'code' => 'required|integer',
+        ]);
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Validation échouée",
+                "errors" => $validate->errors(),
+            ], 400);
+        }
+
+        if (Eleve::where('code', $request->code)->exists()) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Ce code est déjà utilisé par un autre élève",
+            ], 409);
+        }
+
+        $eleve = Eleve::create([
+            'name' => $request->name,
+            'prenom' => $request->prenom,
+            'numeroParent' => $request->numeroParent,
+            'dateOfNaissance' => $request->dateOfNaissance,
+            'handicap_id' => $request->handicap_id,
+            'classe_id' => $enseignant->classe_id,
+            'is_connect' => false,
+            'code' => $request->code,
+        ]);
+
+        $exists = Role::where('name', 'eleve')
+            ->where('guard_name', 'eleve_api')
+            ->exists();
+
+        if (!$exists) {
+            Role::create(["name" => "eleve", "guard_name" => "eleve_api"]);
+        }
+
+        $eleve->assignRole("eleve");
+
+        return response()->json([
+            "status" => "Success",
+            "message" => "Elève ajouté à votre classe avec succès",
+            "data" => $eleve,
+        ], 201);
+    }
+
+    /**
+     * Retrait d'un élève de la classe de l'enseignant connecté.
+     * L'enseignant ne peut supprimer que les élèves de SA classe.
+     * Les notes et retours de projection liés sont supprimés en cascade (FK).
+     */
+    public function destroyForEnseignant($id)
+    {
+        $enseignant = Auth::guard('enseignant_api')->user();
+
+        if (!$enseignant) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Aucun enseignant authentifié",
+            ], 401);
+        }
+
+        if (!$enseignant->classe_id) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Aucune classe n'est assignée à cet enseignant",
+            ], 400);
+        }
+
+        $eleve = Eleve::find($id);
+
+        if (!$eleve) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Aucun élève trouvé avec cet id",
+            ], 400);
+        }
+
+        if ($eleve->classe_id != $enseignant->classe_id) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Cet élève n'appartient pas à votre classe",
+            ], 403);
+        }
+
+        try {
+            // La table eleve_handicaps n'a pas de cascadeOnDelete :
+            // on supprime d'abord les liaisons pour éviter une erreur de FK.
+            eleveHandicap::where('eleve_id', $eleve->id)->delete();
+            $eleve->delete();
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "La suppression de l'élève a échoué",
+            ], 500);
+        }
+
+        return response()->json([
+            "status" => "Success",
+            "message" => "Elève supprimé avec succès",
         ]);
     }
 

@@ -287,5 +287,53 @@ class EnseignantController extends Controller
         ]);
     }
 
+    /**
+     * Changement du mot de passe par l'enseignant lui-même (self-service).
+     * L'utilisateur ciblé est toujours l'enseignant authentifié : aucun id en clair,
+     * il est donc impossible de modifier le mot de passe d'un autre compte.
+     */
+    public function changePassword(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            "current_password" => "required|string",
+            "password" => "required|string|min:8|confirmed",
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => "Validation échouée",
+                "errors" => $validate->errors(),
+            ], 400);
+        }
+
+        $enseignant = Auth::guard("enseignant_api")->user();
+
+        if (!$enseignant) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => "Aucun enseignant authentifié",
+            ], 401);
+        }
+
+        if (!Hash::check($request->current_password, $enseignant->password)) {
+            return response()->json([
+                "status" => "Echoué",
+                "message" => "Le mot de passe actuel est incorrect",
+                "errors" => ["current_password" => ["Le mot de passe actuel est incorrect"]],
+            ], 400);
+        }
+
+        $enseignant->update([
+            "password" => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            "status" => "Success",
+            "message" => "Mot de passe modifié avec succès",
+            "data" => $enseignant->makeHidden(["password"]),
+        ]);
+    }
+
 
 }
