@@ -277,7 +277,7 @@ class EleveController extends Controller
             'numeroParent' => 'required|string',
             'handicap_id' => 'required|integer|exists:handicaps,id',
             'dateOfNaissance' => 'required|string',
-            'code' => 'required|integer',
+            'code' => 'required|string|max:6',
         ]);
         if ($validate->fails()) {
             return response()->json([
@@ -320,6 +320,95 @@ class EleveController extends Controller
             "message" => "Elève ajouté à votre classe avec succès",
             "data" => $eleve,
         ], 201);
+    }
+
+    /**
+     * Modification d'un élève par l'enseignant, dans SA classe.
+     * L'enseignant ne peut modifier que les élèves de SA classe.
+     * Si le code est vide ou inchangé, il est conservé tel quel.
+     */
+    public function updateForEnseignant(Request $request, $id)
+    {
+        $enseignant = Auth::guard('enseignant_api')->user();
+
+        if (!$enseignant) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Aucun enseignant authentifié",
+            ], 401);
+        }
+
+        if (!$enseignant->classe_id) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Aucune classe n'est assignée à cet enseignant",
+            ], 400);
+        }
+
+        $eleve = Eleve::find($id);
+
+        if (!$eleve) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Aucun élève trouvé avec cet id",
+            ], 400);
+        }
+
+        if ($eleve->classe_id != $enseignant->classe_id) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Cet élève n'appartient pas à votre classe",
+            ], 403);
+        }
+
+        $validate = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'prenom' => 'required|string',
+            'numeroParent' => 'required|string',
+            'handicap_id' => 'required|integer|exists:handicaps,id',
+            'dateOfNaissance' => 'required|string',
+            'code' => 'nullable|string|max:6',
+        ]);
+        if ($validate->fails()) {
+            return response()->json([
+                "status" => "Echec",
+                "message" => "Validation échouée",
+                "errors" => $validate->errors(),
+            ], 400);
+        }
+
+        // Si un code est fourni, vérifier qu'il n'est pas déjà utilisé par un AUTRE élève.
+        $newCode = $request->input('code');
+        if ($newCode !== null && $newCode !== '' && (int)$newCode !== (int)$eleve->code) {
+            if (Eleve::where('code', $newCode)->where('id', '!=', $id)->exists()) {
+                return response()->json([
+                    "status" => "Echec",
+                    "message" => "Ce code est déjà utilisé par un autre élève",
+                ], 409);
+            }
+        }
+
+        $payload = [
+            'name' => $request->name,
+            'prenom' => $request->prenom,
+            'numeroParent' => $request->numeroParent,
+            'dateOfNaissance' => $request->dateOfNaissance,
+            'handicap_id' => $request->handicap_id,
+        ];
+
+        // On ne met à jour le code que s'il est explicitement fourni et non vide.
+        if ($newCode !== null && $newCode !== '') {
+            $payload['code'] = $newCode;
+        }
+
+        $eleve->update($payload);
+        $eleve->load(['classe', 'handicap']);
+
+        return response()->json([
+            "status" => "Success",
+            "message" => "Élève modifié avec succès",
+            "data" => $eleve,
+        ], 200);
     }
 
     /**

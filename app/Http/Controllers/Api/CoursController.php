@@ -105,7 +105,7 @@ class CoursController extends Controller
 
     public function show($id)
     {
-        $cours = Cours::with('medias',"retoursProjections")->findOrFail($id);
+        $cours = Cours::with('medias', 'materiels', 'strategies', "retoursProjections")->findOrFail($id);
 
         return response()->json([
             'status' => 'success',

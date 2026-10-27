@@ -128,6 +128,7 @@ Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant")->controller(E
 // L'enseignant gère les élèves de SA classe : ajout et retrait (suppression définitive).
 Route::middleware("auth:enseignant_api")->prefix("/v1/enseignant/classe/eleve")->controller(EleveController::class)->group(function () {
     Route::post("/store", "storeForEnseignant");
+    Route::post("/update/{id}", "updateForEnseignant");
     Route::delete("/destroy/{id}", "destroyForEnseignant");
 });
 
